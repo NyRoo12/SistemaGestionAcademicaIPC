@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
+import NavBar from './components/navbar.jsx';
+
 
 export default function App() {
   return (
-    <div className="min-h-screen max-h-full bg-red-500">
-      <div className="font-bold text-white">tontos</div>
-    </div>
+    <header> <NavBar /> </header>
   );
 }
