@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import logo from './images/logo.png';
 
 function NavBar() {
@@ -11,12 +12,12 @@ function NavBar() {
 
   return (
     <nav className="bg-gray-800 p-4 flex items-center">
-      <img src={logo} alt="Logo" className="w-20 h-auto rounded-lg mr-8" /> {/* Margen derecho agregado */}
+      <img src={logo} alt="Logo" className="w-15 h-12 rounded-lg mr-0" /> {/* Margen derecho agregado */}
       <div className="flex flex-1 justify-start ml-8"> {/* Margen izquierdo agregado */}
         <div className="space-x-8"> {/* Espaciado reducido entre enlaces */}
           {/* Enlace 1 */}
-          <a
-            href="#"
+          <Link
+            to="/"
             onClick={() => handleSelect('buscar')}
             className={`${
               selected === 'buscar'
@@ -25,11 +26,11 @@ function NavBar() {
             } p-2 rounded-lg transition-all duration-300`}
           >
             Buscar Alumnos
-          </a>
+          </Link>
 
           {/* Enlace 2 */}
-          <a
-            href="#"
+          <Link
+            to="/ingresar-alumno" // Cambia a la ruta de la página de ingresar alumnos
             onClick={() => handleSelect('ingresar')}
             className={`${
               selected === 'ingresar'
@@ -38,11 +39,11 @@ function NavBar() {
             } p-2 rounded-lg transition-all duration-300`}
           >
             Ingresar alumnos
-          </a>
+          </Link>
 
           {/* Enlace 3 */}
-          <a
-            href="#"
+          <Link
+            to="/certificado"
             onClick={() => handleSelect('certificado')}
             className={`${
               selected === 'certificado'
@@ -51,7 +52,7 @@ function NavBar() {
             } p-2 rounded-lg transition-all duration-300`}
           >
             Generar Certificado
-          </a>
+          </Link>
         </div>
       </div>
     </nav>
