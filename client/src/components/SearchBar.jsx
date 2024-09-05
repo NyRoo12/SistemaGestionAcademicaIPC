@@ -10,11 +10,12 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold mb-8">
+    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 py-8">
+      {/* Alineación hacia la parte superior con justify-start y padding reducido */}
+      <h1 className="text-3xl font-bold mb-4">
         <img src={ipc} className="w-40 h-auto" />
       </h1>
-      <form onSubmit={handleSearch} className="w-full max-w-md">
+      <form onSubmit={handleSearch} className="w-full max-w-md mb-4">
         <div className="relative flex items-center w-full">
           <input
             type="text"
