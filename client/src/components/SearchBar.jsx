@@ -1,12 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ipc from "./images/ipc.png";
 
 const SearchBar = () => {
   const [query, setQuery] = useState("");
+  const [data, setData] = useState([]); // Agrega esta línea para definir `data`
 
   const handleSearch = (e) => {
     e.preventDefault();
     console.log("Buscando:", query);
+    fetchData(query);
+  };
+
+  const fetchData = async (query) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/estudiantes/buscar?query=${encodeURIComponent(
+          query
+        )}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Error en la solicitud");
+      }
+      const result = await response.json();
+      console.log("Datos recibidos:", result); // Agrega esto para inspeccionar los datos
+      setData(result); // Guarda los datos en el estado
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   return (
@@ -45,6 +66,13 @@ const SearchBar = () => {
           </button>
         </div>
       </form>
+      <ul>
+        {data.map((item) => (
+          <li key={item.rut}>
+            {item.nombre} - {item.rut}
+          </li> // Ajusta esto según la estructura de tus datos
+        ))}
+      </ul>
     </div>
   );
 };
