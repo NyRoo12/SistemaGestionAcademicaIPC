@@ -51,4 +51,31 @@ router.get("/buscar", (req, res) => {
   });
 });
 
+router.get("/obtenerDetalle", (req, res) => {
+  const { query: rut } = req.query;
+
+  if (!rut) {
+    return res
+      .status(400)
+      .json({ error: "El RUT es necesario para la búsqueda" });
+  }
+
+  // Consulta a la base de datos
+  const sql = `SELECT estudiante.nombre AS estudiante_nombre, estudiante.rut AS estudiante_rut, estudiante.carreraDestino AS estudiante_carreraDestino, historialAcademico.codigo_IPC AS asignatura_codigo_IPC, asignaturasIPC.nombre_IPC AS asignatura_nombre, historialAcademico.nota AS nota, historialAcademico.ano AS ano, historialAcademico.semestre AS semestre, asignaturasDestino.codigo_destino AS asignatura_destino_codigo, asignaturasDestino.carrera AS asignatura_destino_carrera, asignaturasDestino.nombre AS asignatura_destino_nombre FROM estudiante JOIN historialAcademico ON estudiante.rut = historialAcademico.rut_estudiante JOIN asignaturasIPC ON historialAcademico.codigo_IPC = asignaturasIPC.codigo_IPC LEFT JOIN asignaturasDestino ON asignaturasIPC.codigo_IPC = asignaturasDestino.codigo_IPC WHERE estudiante.rut = ? ORDER BY historialAcademico.ano, historialAcademico.semestre`;
+
+  connection.query(sql, [rut], (error, results) => {
+    if (error) {
+      console.error("Error en la consulta:", error);
+      return res.status(500).json({ error: "Error en la base de datos" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Estudiante no encontrado" });
+    }
+
+    // Enviar los resultados de vuelta al frontend
+    res.json(results[0]); // Retornar solo el primer resultado, ya que RUT es único
+  });
+});
+
 module.exports = router;
