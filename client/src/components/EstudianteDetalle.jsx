@@ -1,10 +1,9 @@
-// components/EstudianteDetalle.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import TarjetaHistorial from "./TarjetaHistorial.jsx";
 
 const EstudianteDetalle = () => {
-  const { rut } = useParams(); // Obtener el rut desde la URL
+  const { rut } = useParams();
   const [estudiante, setEstudiante] = useState(null);
   const [historial, setHistorial] = useState(null);
   console.log(rut);

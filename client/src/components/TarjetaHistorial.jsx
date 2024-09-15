@@ -9,17 +9,16 @@ const TarjetaHistorial = ({
   semestre,
   estado,
 }) => {
-  // Definir la clase de estilo en función del estado
   let tarjetaClase;
   switch (estado) {
     case 1:
       tarjetaClase = "bg-green-600";
       break;
     case -1:
-      tarjetaClase = "bg-gray-700"; // Color plomo oscuro
+      tarjetaClase = "bg-gray-700";
       break;
     default:
-      tarjetaClase = "bg-red-600"; // Default color for other states
+      tarjetaClase = "bg-red-600";
   }
 
   return (
