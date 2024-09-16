@@ -21,6 +21,7 @@ const EstudianteDetalle = () => {
         }
         const result = await response.json();
         setEstudiante(result);
+        console.log("mostrar detalles del estudiante");
         console.log(result);
       } catch (error) {
         console.error("Error fetching student details:", error);
@@ -53,17 +54,28 @@ const EstudianteDetalle = () => {
   }, [rut]);
 
   if (!estudiante) {
-    estudiante;
     return <div>Cargando detalles del estudiante...</div>;
   }
 
   if (!historial) {
-    historial;
     return <div>Cargando detalles del historial...</div>;
   }
 
   return (
     <div className="min-h-screen p-8 bg-gray-100">
+      {/* Sección para mostrar los detalles del estudiante */}
+      <div className="mb-8 p-4 bg-white rounded-lg shadow-lg">
+        <h2 className="text-xl font-bold mb-4">Detalles del Estudiante</h2>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <p><span className="font-semibold">Nombre:</span> {estudiante.nombre}</p>
+            <p><span className="font-semibold">RUT:</span> {estudiante.rut}</p>
+            <p><span className="font-semibold">Carrera Destino:</span> {estudiante.carreraDestino}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Sección para mostrar el historial académico */}
       <h2 className="text-2xl font-bold mb-4 text-center">
         Historial Académico
       </h2>
