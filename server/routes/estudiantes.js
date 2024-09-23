@@ -61,7 +61,7 @@ router.get("/obtenerDetalle", (req, res) => {
   }
 
   // Consulta a la base de datos
-  const sql = `SELECT estudiante.nombre AS estudiante_nombre, estudiante.rut AS estudiante_rut, estudiante.carreraDestino AS estudiante_carreraDestino, historialAcademico.codigo_IPC AS asignatura_codigo_IPC, asignaturasIPC.nombre_IPC AS asignatura_nombre, historialAcademico.nota AS nota, historialAcademico.ano AS ano, historialAcademico.semestre AS semestre, asignaturasDestino.codigo_destino AS asignatura_destino_codigo, asignaturasDestino.carrera AS asignatura_destino_carrera, asignaturasDestino.nombre AS asignatura_destino_nombre FROM estudiante JOIN historialAcademico ON estudiante.rut = historialAcademico.rut_estudiante JOIN asignaturasIPC ON historialAcademico.codigo_IPC = asignaturasIPC.codigo_IPC LEFT JOIN asignaturasDestino ON asignaturasIPC.codigo_IPC = asignaturasDestino.codigo_IPC WHERE estudiante.rut = ? ORDER BY historialAcademico.ano, historialAcademico.semestre`;
+  const sql = `SELECT nombre, rut, carreraDestino FROM estudiante WHERE rut = ?`;
 
   connection.query(sql, [rut], (error, results) => {
     if (error) {

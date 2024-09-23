@@ -12,11 +12,13 @@ app.use(cors()); // Usa cors en toda la aplicación
 const estudiantesRoutes = require("./routes/estudiantes");
 const asignaturasIPCRoutes = require("./routes/asignaturasIPC");
 const historialAcademicoRoutes = require("./routes/historialAcademico");
+const equivalenciasRoutes = require("./routes/equivalencias");
 
 // Usar las rutas
 app.use("/api/estudiantes", estudiantesRoutes);
 app.use("/api/asignaturasIPC", asignaturasIPCRoutes);
 app.use("/api/historialAcademico", historialAcademicoRoutes);
+app.use("/api/equivalencias", equivalenciasRoutes);
 
 const PORT = process.env.PORT || 3001;
 

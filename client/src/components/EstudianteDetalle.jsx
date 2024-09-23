@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import TarjetaHistorial from "./TarjetaHistorial.jsx";
+import BotonEquivalencias from "./BotonEquivalencias.jsx"; // Importa el componente
 
 const EstudianteDetalle = () => {
   const { rut } = useParams();
@@ -73,6 +74,11 @@ const EstudianteDetalle = () => {
             <p><span className="font-semibold">Carrera Destino:</span> {estudiante.carreraDestino}</p>
           </div>
         </div>
+      </div>
+
+      {/* Botón para mostrar equivalencias */}
+      <div className="mb-8 p-4 bg-white rounded-lg shadow-lg">
+        <BotonEquivalencias rut={rut} />
       </div>
 
       {/* Sección para mostrar el historial académico */}
