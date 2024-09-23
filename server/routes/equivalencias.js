@@ -39,29 +39,34 @@ router.get("/obtenerEquivalencias", (req, res) => {
     //     WHERE ha.rut_estudiante = ?
     //   )`;
     const sqlEquivalencias = `
-      SELECT ipc.codigo_IPC, ipc.nombre_IPC, ad.codigo_destino, ad.nombre
-      FROM asignaturasIPC ipc
-      JOIN asignaturasDestino ad ON ipc.codigo_IPC = ad.codigo_IPC
-      WHERE ipc.codigo_IPC IN (
-        SELECT ha.codigo_IPC
-        FROM historialAcademico ha
-        WHERE ha.rut_estudiante = ?
-      )`;
+  SELECT ipc.codigo_IPC, ipc.nombre_IPC, ad.codigo_destino, ad.nombre, ad.carrera
+  FROM asignaturasIPC ipc
+  JOIN asignaturasDestino ad ON ipc.codigo_IPC = ad.codigo_IPC
+  WHERE ipc.codigo_IPC IN (
+    SELECT ha.codigo_IPC
+    FROM historialAcademico ha
+    WHERE ha.rut_estudiante = ?
+    )
+    AND ad.carrera = (
+    SELECT e.carreraDestino
+    FROM estudiante e
+    WHERE e.rut = ?
+  )`;
 
 
-    connection.query(sqlEquivalencias, [rut], (errorEquivalencias, resultsEquivalencias) => {
-      if (errorEquivalencias) {
-        console.error("Error en la consulta de equivalencias:", errorEquivalencias);
-        return res.status(500).json({ error: "Error en la base de datos" });
-      }
-
-      if (resultsEquivalencias.length === 0) {
-        return res.status(404).json({ error: "No se encontraron equivalencias para las asignaturas del estudiante" });
-      }
-
-      // Enviar los resultados de vuelta al frontend
-      res.json(resultsEquivalencias);
-    });
+  connection.query(sqlEquivalencias, [rut, rut], (errorEquivalencias, resultsEquivalencias) => {
+    if (errorEquivalencias) {
+      console.error("Error en la consulta de equivalencias:", errorEquivalencias);
+      return res.status(500).json({ error: "Error en la base de datos" });
+    }
+  
+    if (resultsEquivalencias.length === 0) {
+      return res.status(404).json({ error: "No se encontraron equivalencias para las asignaturas del estudiante en la carrera de destino" });
+    }
+  
+    // Enviar los resultados de vuelta al frontend
+    res.json(resultsEquivalencias);
+  });
   });
 });
 
