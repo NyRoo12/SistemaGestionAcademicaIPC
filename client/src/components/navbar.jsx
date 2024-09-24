@@ -3,26 +3,57 @@ import { Link } from 'react-router-dom';
 import logo from './images/logo.png';
 
 function NavBar() {
-  const [selected, setSelected] = useState(''); // Estado para el enlace seleccionado
+  const [selected, setSelected] = useState('buscar'); // Estado inicial para el enlace seleccionado
 
   // Función para manejar el cambio del enlace seleccionado
   const handleSelect = (page) => {
     setSelected(page);
   };
 
+  // Lógica para cambiar la posición del cuadro blanco
+  const getPosition = () => {
+    switch (selected) {
+      case 'buscar':
+        return 'translate-x-0'; // Posición inicial
+      case 'ingresar':
+        return 'translate-x-[95%]'; // Mover 1 espacio a la derecha
+      case 'certificado':
+        return 'translate-x-[205%]'; // Mover 2 espacios a la derecha
+      default:
+        return 'translate-x-0';
+    }
+  };
+
+  // Lógica para cambiar el ancho del cuadro blanco
+  const getWidth = () => {
+    switch (selected) {
+      case 'buscar':
+        return 'w-32'; // Ancho del cuadro para "Buscar Alumnos"
+      case 'ingresar':
+        return 'w-40'; // Ancho del cuadro para "Ingresar Alumnos"
+      case 'certificado':
+        return 'w-40'; // Ancho del cuadro para "Generar Certificado"
+      default:
+        return 'w-32';
+    }
+  };
+
   return (
-    <nav className="bg-gray-800 p-4 flex items-center">
-      <img src={logo} alt="Logo" className="w-15 h-12 rounded-lg mr-0" /> {/* Margen derecho agregado */}
-      <div className="flex flex-1 justify-start ml-8"> {/* Margen izquierdo agregado */}
-        <div className="space-x-8"> {/* Espaciado reducido entre enlaces */}
+    <nav className="relative bg-gray-800 p-4 flex items-center">
+      <img src={logo} alt="Logo" className="w-15 h-12 rounded-lg mr-0" />
+      <div className="flex flex-1 justify-start ml-8 relative">
+        {/* Cuadro blanco animado con tamaño dinámico */}
+        <div
+          className={`absolute top-0 left-0 h-full bg-gray-100 rounded-lg transition-all duration-500 ease-in-out ${getPosition()} ${getWidth()}`}
+        ></div>
+
+        <div className="space-x-8 flex relative z-10">
           {/* Enlace 1 */}
           <Link
             to="/"
             onClick={() => handleSelect('buscar')}
             className={`${
-              selected === 'buscar'
-                ? 'bg-gray-100 text-black pb-10'
-                : 'text-gray-300 hover:text-white'
+              selected === 'buscar' ? 'text-black' : 'text-gray-300 hover:text-white'
             } p-2 rounded-lg transition-all duration-300`}
           >
             Buscar Alumnos
@@ -30,12 +61,10 @@ function NavBar() {
 
           {/* Enlace 2 */}
           <Link
-            to="/ingresar-alumno" // Cambia a la ruta de la página de ingresar alumnos
+            to="/ingresar-alumno"
             onClick={() => handleSelect('ingresar')}
             className={`${
-              selected === 'ingresar'
-                ? 'bg-gray-100 text-black pb-10'
-                : 'text-gray-300 hover:text-white'
+              selected === 'ingresar' ? 'text-black' : 'text-gray-300 hover:text-white'
             } p-2 rounded-lg transition-all duration-300`}
           >
             Ingresar alumnos
@@ -46,9 +75,7 @@ function NavBar() {
             to="/certificado"
             onClick={() => handleSelect('certificado')}
             className={`${
-              selected === 'certificado'
-                ? 'bg-gray-100 text-black pb-10'
-                : 'text-gray-300 hover:text-white'
+              selected === 'certificado' ? 'text-black' : 'text-gray-300 hover:text-white'
             } p-2 rounded-lg transition-all duration-300`}
           >
             Generar Certificado
