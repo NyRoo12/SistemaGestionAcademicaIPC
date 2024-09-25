@@ -1,0 +1,36 @@
+services:
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+    links:
+      - db
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: GestionAsignaturasIPC
+      MYSQL_USER: manager_test
+      MYSQL_PASSWORD: RqoK
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./db/db.sql:/docker-entrypoint-initdb.d/init.sql
+      - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:

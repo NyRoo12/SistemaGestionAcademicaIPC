@@ -6,6 +6,11 @@ const BotonEquivalencias = ({ rut }) => {
   const [error, setError] = useState(null);
 
   const handleClick = async () => {
+    if (equivalencias.length > 0) {
+      setEquivalencias([]);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -31,7 +36,7 @@ const BotonEquivalencias = ({ rut }) => {
         onClick={handleClick}
         className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
       >
-        Ver Equivalencias
+        {equivalencias.length > 0 ? "Cerrar Equivalencias" : "Ver Equivalencias"}
       </button>
       {loading && <p>Cargando equivalencias...</p>}
       {error && <p>{error}</p>}

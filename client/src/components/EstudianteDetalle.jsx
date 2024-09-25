@@ -63,18 +63,33 @@ const EstudianteDetalle = () => {
   }
 
   return (
-    <div className="min-h-screen p-8 bg-gray-100">
-      {/* Sección para mostrar los detalles del estudiante */}
-      <div className="mb-8 p-4 bg-white rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4">Detalles del Estudiante</h2>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p><span className="font-semibold">Nombre:</span> {estudiante.nombre}</p>
-            <p><span className="font-semibold">RUT:</span> {estudiante.rut}</p>
-            <p><span className="font-semibold">Carrera Destino:</span> {estudiante.carreraDestino}</p>
-          </div>
+<div className="min-h-screen p-8 bg-gray-100">
+    {/* Sección para mostrar los detalles del estudiante */}
+    <div className="mb-8 p-4 bg-white rounded-lg shadow-lg">
+      <h2 className="text-xl font-bold mb-4">Detalles del Estudiante</h2>
+      
+      {/* Contenedor flex para alinear el icono y el texto horizontalmente */}
+      <div className="flex items-center">
+        {/* Icono de usuario */}
+        <div className="flex items-center justify-center w-20 h-20 bg-gray-300 rounded-full mr-4">
+          <svg
+            className="w-12 h-12 text-gray-700"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5z" />
+          </svg>
+        </div>
+
+        {/* Texto del estudiante */}
+        <div>
+          <p><span className="font-semibold">Nombre:</span> {estudiante.nombre}</p>
+          <p><span className="font-semibold">RUT:</span> {estudiante.rut}</p>
+          <p><span className="font-semibold">Carrera Destino:</span> {estudiante.carreraDestino}</p>
         </div>
       </div>
+    </div>
 
       {/* Botón para mostrar equivalencias */}
       <div className="mb-8 p-4 bg-white rounded-lg shadow-lg">
