@@ -23,5 +23,14 @@ services:
     # Script de espera
     entrypoint: ["sh", "-c", "until nc -z db 3306; do echo Waiting for MySQL; sleep 20; done; node ./app.js"]
 
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+      
 volumes:
   db_data:
