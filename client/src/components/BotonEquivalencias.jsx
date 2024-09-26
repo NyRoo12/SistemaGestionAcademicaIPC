@@ -1,58 +1,50 @@
-import React, { useState } from "react";
+import React from "react";
 
-const BotonEquivalencias = ({ rut }) => {
-  const [equivalencias, setEquivalencias] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handleClick = async () => {
-    if (equivalencias.length > 0) {
-      setEquivalencias([]);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(
-        `http://localhost:3001/api/equivalencias/obtenerEquivalencias?query=${encodeURIComponent(rut)}`
-      );
-      if (!response.ok) {
-        throw new Error("Error al obtener las equivalencias");
-      }
-      const result = await response.json();
-      setEquivalencias(result);
-    } catch (error) {
-      setError("No se pudo obtener las equivalencias");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+const BotonEquivalencias = ({ mostrarEquivalencias, onClick }) => {
   return (
-    <div>
+    <div className="flex justify-center mb-4">
       <button
-        onClick={handleClick}
-        className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
+        onClick={onClick}
+        className="bg-blue-500 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
       >
-        {equivalencias.length > 0 ? "Cerrar Equivalencias" : "Ver Equivalencias"}
+        {mostrarEquivalencias ? (
+          <span className="flex items-center">
+            <svg
+              className="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H9m6 0h3m-3 0h-3M9 16l-4 4m0 0l4-4m-4 4l4-4m3-12l4 4m0 0l-4-4m4 4l-4-4"
+              />
+            </svg>
+            Cerrar Equivalencias
+          </span>
+        ) : (
+          <span className="flex items-center">
+            <svg
+              className="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H9m6 0h3m-3 0h-3M9 16l-4 4m0 0l4-4m-4 4l4-4m3-12l4 4m0 0l-4-4m4 4l-4-4"
+              />
+            </svg>
+            Ver Equivalencias
+          </span>
+        )}
       </button>
-      {loading && <p>Cargando equivalencias...</p>}
-      {error && <p>{error}</p>}
-      {equivalencias.length > 0 && (
-        <div className="mt-4">
-          <h3 className="text-lg font-bold">Equivalencias</h3>
-          <ul>
-            {equivalencias.map((eq, index) => (             
-              <li key={index} className="py-2 border-b">
-                {eq.codigo_IPC} {" "} {eq.nombre_IPC} equivale a {eq.codigo_destino}{" "}
-                {eq.nombre}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 };
