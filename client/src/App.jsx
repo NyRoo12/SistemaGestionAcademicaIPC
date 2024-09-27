@@ -1,9 +1,10 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React, { Suspense, lazy } from "react";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import NavBar from "./components/navbar.jsx";
 import SearchBar from "./components/SearchBar.jsx";
-import IngresarAlumno from "./components/IngresarAlumno.jsx";
-import EstudianteDetalle from "./components/EstudianteDetalle.jsx"; // Importa el nuevo componente
+
+const IngresarAlumno = lazy(() => import("./components/IngresarAlumno.jsx"));
+const EstudianteDetalle = lazy(() => import("./components/EstudianteDetalle.jsx"));
 
 export default function App() {
   return (
@@ -12,12 +13,13 @@ export default function App() {
         <NavBar />
       </header>
       <main>
-        <Routes>
-          <Route path="/" element={<SearchBar />} />
-          <Route path="/ingresar-alumno" element={<IngresarAlumno />} />
-          <Route path="/estudiante/:rut" element={<EstudianteDetalle />} />{" "}
-          {/* Nueva ruta */}
-        </Routes>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            <Route path="/" element={<SearchBar />} />
+            <Route path="/ingresar-alumno" element={<IngresarAlumno />} />
+            <Route path="/estudiante/:rut" element={<EstudianteDetalle />} />
+          </Routes>
+        </Suspense>
       </main>
     </Router>
   );
