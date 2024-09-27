@@ -13,12 +13,14 @@ const estudiantesRoutes = require("./routes/estudiantes");
 const asignaturasIPCRoutes = require("./routes/asignaturasIPC");
 const historialAcademicoRoutes = require("./routes/historialAcademico");
 const equivalenciasRoutes = require("./routes/equivalencias");
+const loginRoutes = require("./routes/login"); // Corregir el nombre para que coincida
 
 // Usar las rutas
 app.use("/api/estudiantes", estudiantesRoutes);
 app.use("/api/asignaturasIPC", asignaturasIPCRoutes);
 app.use("/api/historialAcademico", historialAcademicoRoutes);
 app.use("/api/equivalencias", equivalenciasRoutes);
+app.use("/api/login", loginRoutes); // Usa loginRoutes en lugar de login
 
 const PORT = process.env.PORT || 3001;
 
