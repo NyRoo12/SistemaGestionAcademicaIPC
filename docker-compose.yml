@@ -3,7 +3,7 @@ services:
   db:
     image: mysql:8
     environment:
-      MYSQL_ROOT_PASSWORD: 'jaja'
+      MYSQL_ROOT_PASSWORD: 'Jks@a12flp327185@'
       MYSQL_DATABASE: 'GestionAsignaturasIPC'
       MYSQL_USER: 'manager_test'
       MYSQL_PASSWORD: 'RqoK'

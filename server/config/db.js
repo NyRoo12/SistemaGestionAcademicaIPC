@@ -2,7 +2,7 @@ require('dotenv').config(); // <-- Carga las variables de entorno
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
-    host: process.env.DB_HOST || 'db',  // Cambia 'localhost' o '0.0.0.0' a 'db'
+    host: process.env.DB_HOST ,  // Cambia 'localhost' o '0.0.0.0' a 'db'
     user: process.env.DB_USER,       // Tu usuario de MySQL
     port: process.env.DB_PORT,
     password: process.env.DB_PASSWORD,  // Tu contraseña de MySQL
