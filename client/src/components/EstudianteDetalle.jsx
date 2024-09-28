@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import DetallesEstudiante from "./DetallesEstudiante.jsx";
 import BotonEquivalencias from "./BotonEquivalencias.jsx";
 import HistorialAcademico from "./HistorialAcademico.jsx";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const EstudianteDetalle = () => {
   const { rut } = useParams();
@@ -15,9 +16,7 @@ const EstudianteDetalle = () => {
     const fetchEstudiante = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/estudiantes/obtenerDetalle?query=${encodeURIComponent(
-            rut
-          )}`
+          `${apiUrl}/estudiantes/obtenerDetalle?query=${encodeURIComponent(rut)}`
         );
         if (!response.ok) {
           throw new Error("Error al obtener el estudiante");
@@ -36,9 +35,7 @@ const EstudianteDetalle = () => {
     const fetchHistorial = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/historialAcademico/obtenerHistorial?query=${encodeURIComponent(
-            rut
-          )}`
+          `${apiUrl}/historialAcademico/obtenerHistorial?query=${encodeURIComponent(rut)}`
         );
         if (!response.ok) {
           throw new Error("Error al obtener el historial");
@@ -58,9 +55,7 @@ const EstudianteDetalle = () => {
       const fetchEquivalencias = async () => {
         try {
           const response = await fetch(
-            `http://localhost:3001/api/equivalencias/obtenerEquivalencias?query=${encodeURIComponent(
-              rut
-            )}`
+            `${apiUrl}/equivalencias/obtenerEquivalencias?query=${encodeURIComponent(rut)}`
           );
           if (!response.ok) {
             throw new Error("Error al obtener las equivalencias");

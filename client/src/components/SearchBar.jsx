@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ipc from "./images/ipc.png";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const SearchBar = () => {
   const [query, setQuery] = useState("");
@@ -11,7 +12,7 @@ const SearchBar = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/estudiantes`);
+        const response = await fetch(`${apiUrl}/estudiantes`);
         if (!response.ok) {
           throw new Error("Error en la solicitud");
         }
@@ -29,9 +30,12 @@ const SearchBar = () => {
     e.preventDefault();
     setSearchPerformed(true); // Marca que se realizó una búsqueda
     try {
+
       const response = await fetch(
-        `http://localhost:3001/api/estudiantes/buscar?query=${encodeURIComponent(query)}`
+        `${apiUrl}/estudiantes/buscar?query=${encodeURIComponent(query)}`
       );
+      console.log("apiUrl:", apiUrl); // Verifica el valor de apiUrl
+      console.log("query:", query);
       if (!response.ok) {
         throw new Error("Error en la solicitud");
       }

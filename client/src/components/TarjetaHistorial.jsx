@@ -18,7 +18,7 @@ const TarjetaHistorial = ({
       tarjetaClase = "bg-gray-700";
       break;
     case -2:
-      tarjetaClase = "bg-yellow-200";
+      tarjetaClase = "bg-yellow-500";
       break;
     default:
       tarjetaClase = "bg-red-600";
