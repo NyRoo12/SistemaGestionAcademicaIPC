@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 8.0.36, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
 -- Host: localhost    Database: GestionAsignaturasIPC
 -- ------------------------------------------------------
@@ -128,6 +128,28 @@ LOCK TABLES `historialAcademico` WRITE;
 INSERT INTO `historialAcademico` VALUES ('11122233-4','IPC001',7,2022,'Primero',1),('11122233-4','IPC002',6.7,2023,'Segundo',1),('11122233-4','IPC004',5.9,2023,'Primero',1),('11122233-4','IPC005',7,2023,'Primero',1),('12345678-9','IPC001',6,2023,'Primero',1),('12345678-9','IPC002',5.8,2023,'Segundo',1),('12345678-9','IPC003',6.5,2022,'Primero',1),('12345678-9','IPC004',5.3,2023,'Primero',1),('12378945-6','IPC001',6.9,2023,'Segundo',1),('12378945-6','IPC002',6.8,2023,'Primero',1),('12378945-6','IPC003',5.7,2022,'Segundo',1),('12378945-6','IPC005',6,2023,'Primero',1),('87654321-0','IPC002',5.4,2023,'Primero',1),('87654321-0','IPC003',4.9,2022,'Primero',0),('87654321-0','IPC004',6.1,2023,'Primero',1),('87654321-0','IPC005',5,2022,'Segundo',1),('98765432-1','IPC001',6.2,2022,'Primero',1),('98765432-1','IPC003',5.9,2023,'Primero',1),('98765432-1','IPC004',5.5,2022,'Segundo',1),('98765432-1','IPC005',4.8,2023,'Segundo',0);
 /*!40000 ALTER TABLE `historialAcademico` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user` (
+  `hashed_password` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES ('$2a$10$T4UacOIe2waJthyhw3oEeOd.Fe.AFYRnGtG.qpOK41KS9O7WtwlWm');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -138,4 +160,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-24 18:41:57
+-- Dump completed on 2024-09-28 16:39:26

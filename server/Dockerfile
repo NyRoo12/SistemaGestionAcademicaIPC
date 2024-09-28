@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Exponer el puerto en el que la aplicación se ejecuta (por ejemplo, 3000)
-EXPOSE 3001
+EXPOSE 4006
 
 # Comando por defecto para iniciar el servidor
 CMD ["node", "app.js"]

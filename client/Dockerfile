@@ -1,32 +1,24 @@
-FROM node:20-alpine3.20 AS build-stage
+# Etapa 1: Construcción de la aplicación y entorno de desarrollo
+FROM node:20-alpine3.20 AS development
 
-# WORKDIR /web
-
-# COPY package*.json ./
-
-# ENV REACT_APP_SERVER_URL=$REACT_APP_SERVER_URL
-# ENV REACT_APP_API_URL=$REACT_APP_API_URL
-
-# RUN npm install
-
-# COPY . .
-
-# RUN npm run build 
-
-# FROM nginx:1.27-alpine3.20
-
-# COPY --from=build-stage /web/build/. /usr/share/nginx/html/.
-
-# CMD ["nginx", "-g", "daemon off;"]
-
+# Establecer el directorio de trabajo
 WORKDIR /app
 
-COPY package.json package-lock.json /app/
+# Copiar los archivos necesarios para la instalación de dependencias
+COPY package.json package-lock.json ./
 
+# Instalar dependencias
 RUN npm install
 
-COPY . /app
+# Copiar el resto del código de la aplicación
+COPY . .
 
-EXPOSE 3000
+# Exponer el puerto que usará React (el puerto predeterminado es 3000)
+EXPOSE 3006
 
+# Variables de entorno para desarrollo, si es necesario
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
+# Comando para iniciar la aplicación en modo desarrollo
 CMD ["npm", "start"]

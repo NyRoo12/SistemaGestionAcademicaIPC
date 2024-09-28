@@ -17,7 +17,7 @@ services:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - "3001:3001"
+      - "4006:4006"
     depends_on:
       - db
     # Script de espera
@@ -28,9 +28,11 @@ services:
       context: ./client
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3006:3006"
     depends_on:
       - backend
+    env_file: 
+      - ./client/.env 
       
 volumes:
   db_data:
