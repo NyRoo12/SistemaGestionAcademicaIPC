@@ -15,7 +15,7 @@ const EstudianteDetalle = () => {
     const fetchEstudiante = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/estudiantes/obtenerDetalle?query=${encodeURIComponent(
+          `http://146.83.216.166:4006/api/estudiantes/obtenerDetalle?query=${encodeURIComponent(
             rut
           )}`
         );
@@ -36,7 +36,7 @@ const EstudianteDetalle = () => {
     const fetchHistorial = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/historialAcademico/obtenerHistorial?query=${encodeURIComponent(
+          `http://146.83.216.166:4006/api/historialAcademico/obtenerHistorial?query=${encodeURIComponent(
             rut
           )}`
         );
@@ -58,7 +58,7 @@ const EstudianteDetalle = () => {
       const fetchEquivalencias = async () => {
         try {
           const response = await fetch(
-            `http://localhost:3001/api/equivalencias/obtenerEquivalencias?query=${encodeURIComponent(
+            `http://146.83.216.166:4006/api/equivalencias/obtenerEquivalencias?query=${encodeURIComponent(
               rut
             )}`
           );
