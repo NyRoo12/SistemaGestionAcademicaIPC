@@ -6,7 +6,6 @@ const SearchBar = () => {
   const [query, setQuery] = useState("");
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [searchPerformed, setSearchPerformed] = useState(false); // Nueva bandera
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,10 +26,11 @@ const SearchBar = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    setSearchPerformed(true); // Marca que se realizó una búsqueda
     try {
       const response = await fetch(
-        `http://localhost:3001/api/estudiantes/buscar?query=${encodeURIComponent(query)}`
+        `http://localhost:3001/api/estudiantes/buscar?query=${encodeURIComponent(
+          query
+        )}`
       );
       if (!response.ok) {
         throw new Error("Error en la solicitud");
@@ -91,11 +91,7 @@ const SearchBar = () => {
       </form>
 
       <div className="w-full max-w-md">
-        {searchPerformed && filteredData.length === 0 ? (
-          <div className="text-center my-4">
-            <span className="text-lg text-gray-600">Sin Resultados</span>
-          </div>
-        ) : (
+        {filteredData.length > 0 ? (
           filteredData.map((estudiante) => (
             <Link
               key={estudiante.rut}
@@ -104,29 +100,9 @@ const SearchBar = () => {
             >
               <div className="flex items-center">
                 <div className="flex items-center justify-center w-10 h-10 bg-gray-300 rounded-full mr-4">
-                  <svg
-                    className="w-6 h-6 text-gray-700"
-                    fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5z" />
-                  </svg>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-lg">{estudiante.nombre}</span>
-                  <span className="text-sm text-gray-600">{estudiante.rut}</span>
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="text-sm text-gray-500">{estudiante.carreraDestino}</span>
-              </div>
-            </Link>
-          ))
-        )}
-      </div>
-    </div>
-  );
-};
+                  <svg className="w-6 h-6 text-gray-700" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v
+
+2h20v-2c0-3.33-6.67-5-10-5z" /> </svg> </div> <div className="flex flex-col"> <span className="text-lg">{estudiante.nombre}</span> <span className="text-sm text-gray-600">{estudiante.rut}</span> </div> </div> <div className="text-right"> <span className="text-sm text-gray-500">{estudiante.carreraDestino}</span> </div> </Link> )) ) : ( <div className="text-center my-4"> <span className="text-lg text-gray-600">Sin Resultados</span> </div> )} </div> </div> ); };
 
 export default SearchBar;
