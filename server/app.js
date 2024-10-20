@@ -10,7 +10,7 @@ app.use(cors()); // Usa cors en toda la aplicación
 
 // Importar rutas
 const estudiantesRoutes = require("./routes/estudiantes");
-const asignaturasIPCRoutes = require("./routes/asignaturasIPC");
+const asignaturasIPCRoutes = require("./routes/asignaturasIpc");
 const historialAcademicoRoutes = require("./routes/historialAcademico");
 const equivalenciasRoutes = require("./routes/equivalencias");
 const loginRoutes = require("./routes/login"); // Corregir el nombre para que coincida
