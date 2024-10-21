@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { useDropzone } from 'react-dropzone';
+import * as XLSX from 'xlsx';
 
 function IngresarAlumno() {
-  // Estado para manejar los valores de los inputs del estudiante
   const [student, setStudent] = useState({
     nombre: "",
     rut: "",
@@ -9,97 +10,218 @@ function IngresarAlumno() {
     año: "",
   });
 
-  // Función para manejar el cambio de valor en los inputs
+  const [data, setData] = useState([]);
+  const [fileName, setFileName] = useState(""); // Estado para almacenar el nombre del archivo cargado
+  const [step, setStep] = useState(1); // Estado para manejar el paso actual (1: formulario, 2: confirmar)
+
   const handleInputChange = (field, value) => {
     setStudent({ ...student, [field]: value });
+  };
+
+  const onDrop = (acceptedFiles) => {
+    const file = acceptedFiles[0];
+    setFileName(file.name); // Guardar el nombre del archivo
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const binaryStr = e.target.result;
+      const workbook = XLSX.read(binaryStr, { type: 'binary' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+      const editableData = jsonData.map((row) => ({
+        ...row,
+        isEditing: false,
+      }));
+
+      setData(editableData);
+    };
+    reader.readAsBinaryString(file);
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: '.xls, .xlsx' });
+
+  // Función para eliminar el archivo cargado
+  const handleDeleteFile = () => {
+    setData([]);
+    setFileName("");
+  };
+
+  // Función para cambiar al siguiente paso
+  const handleContinue = () => {
+    setStep(2); // Cambia al paso 2 (confirmar datos)
+  };
+
+  const handleBack = () => {
+    setStep(1); // Volver al paso 1 (formulario)
   };
 
   return (
     <div className="p-8 bg-gray-100 h-screen flex justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg w-2/3">
-        <div className="flex items-start justify-between">
-          {/* Formulario de datos del estudiante */}
-          <div className="grid grid-cols-2 gap-4 flex-grow">
-            <div className="col-span-2">
-              <label className="block font-semibold mb-2">Nombre:</label>
-              <input
-                type="text"
-                value={student.nombre}
-                onChange={(e) => handleInputChange("nombre", e.target.value)}
-                className="w-full px-3 py-2 border rounded"
-              />
+        {step === 1 ? (
+          // Mostrar formulario en el paso 1
+          <>
+            <div className="flex items-start justify-between">
+              <div className="grid grid-cols-2 gap-4 flex-grow">
+                <div className="col-span-2">
+                  <label className="block font-semibold mb-2">Nombre:</label>
+                  <input
+                    type="text"
+                    value={student.nombre}
+                    onChange={(e) => handleInputChange("nombre", e.target.value)}
+                    className="w-full px-3 py-2 border rounded"
+                  />
+                </div>
+                <div className="col-span-2">
+                  <label className="block font-semibold mb-2">Rut:</label>
+                  <input
+                    type="text"
+                    value={student.rut}
+                    onChange={(e) => handleInputChange("rut", e.target.value)}
+                    className="w-full px-3 py-2 border rounded"
+                  />
+                </div>
+                <div className="col-span-1">
+                  <label className="block font-semibold mb-2">Carrera Destino:</label>
+                  <input
+                    type="text"
+                    value={student.carrera}
+                    onChange={(e) => handleInputChange("carrera", e.target.value)}
+                    className="w-full px-3 py-2 border rounded"
+                  />
+                </div>
+                <div className="col-span-1">
+                  <label className="block font-semibold mb-2">Año de Ingreso:</label>
+                  <input
+                    type="text"
+                    value={student.año}
+                    onChange={(e) => handleInputChange("año", e.target.value)}
+                    className="w-full px-3 py-2 border rounded"
+                  />
+                </div>
+              </div>
             </div>
 
-            <div className="col-span-2">
-              <label className="block font-semibold mb-2">Rut:</label>
-              <input
-                type="text"
-                value={student.rut}
-                onChange={(e) => handleInputChange("rut", e.target.value)}
-                className="w-full px-3 py-2 border rounded"
-              />
+            <div className="mt-8">
+              <h2 className="font-bold text-xl mb-4">Historial académico</h2>
+              <div
+                {...getRootProps()}
+                className="bg-gray-300 p-6 rounded-lg flex justify-center items-center cursor-pointer"
+              >
+                <input {...getInputProps()} />
+                <p className="ml-4 text-gray-600 text-center">
+                  Arrastra un archivo Excel aquí, o haz clic para seleccionarlo
+                </p>
+              </div>
+
+              {fileName && (
+                <div className="mt-4">
+                  <p className="text-green-600">{fileName} ha sido cargado.</p>
+                  <button
+                    onClick={handleDeleteFile}
+                    className="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+                  >
+                    Eliminar archivo
+                  </button>
+                </div>
+              )}
+
+              {data.length > 0 && (
+                <div className="mt-4">
+                  <h3>Datos del archivo Excel cargados:</h3>
+                  <pre>{JSON.stringify(data, null, 2)}</pre>
+                </div>
+              )}
             </div>
 
-            <div className="col-span-1">
-              <label className="block font-semibold mb-2">Carrera Destino:</label>
-              <input
-                type="text"
-                value={student.carrera}
-                onChange={(e) => handleInputChange("carrera", e.target.value)}
-                className="w-full px-3 py-2 border rounded"
-              />
+            {/* Botón de continuar */}
+            <button
+              onClick={handleContinue}
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Continuar
+            </button>
+          </>
+        ) : (
+          // Mostrar confirmación de datos en el paso 2
+          <>
+            <h2 className="text-2xl font-bold mb-6">Confirmar Datos del Alumno</h2>
+            <div className="mb-8">
+              <h3 className="text-xl font-semibold mb-4">Datos Personales</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="font-semibold">Nombre:</label>
+                  <p>{student.nombre}</p>
+                </div>
+                <div>
+                  <label className="font-semibold">Rut:</label>
+                  <p>{student.rut}</p>
+                </div>
+                <div>
+                  <label className="font-semibold">Carrera Destino:</label>
+                  <p>{student.carrera}</p>
+                </div>
+                <div>
+                  <label className="font-semibold">Año de Ingreso:</label>
+                  <p>{student.año}</p>
+                </div>
+              </div>
             </div>
 
-            <div className="col-span-1">
-              <label className="block font-semibold mb-2">Año de Ingreso:</label>
-              <input
-                type="text"
-                value={student.año}
-                onChange={(e) => handleInputChange("año", e.target.value)}
-                className="w-full px-3 py-2 border rounded"
-              />
+            <h3 className="text-xl font-semibold mb-4">Datos Académicos</h3>
+            <div style={{ overflowX: "auto" }}>
+              <table border="1" cellPadding="10" style={{ width: "100%", textAlign: "center" }}>
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Nota</th>
+                    <th>Régimen</th>
+                    <th>Nivel</th>
+                    <th>Año</th>
+                    <th>Periodo</th>
+                    <th>Créditos (SCT)</th>
+                    <th>Hrs. presenciales</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((row, index) => (
+                    <tr key={index}>
+                      <td>{row.Código}</td>
+                      <td>{row.Nombre}</td>
+                      <td>{row.Nota}</td>
+                      <td>{row.Régimen}</td>
+                      <td>{row.Nivel}</td>
+                      <td>{row.Año}</td>
+                      <td>{row.Periodo}</td>
+                      <td>{row["Créditos(sct)"]}</td>
+                      <td>{row["Hrs. presenciales"]}</td>
+                      <td>{row.Estado}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          </div>
 
-          {/* Ícono del perfil del estudiante alineado a la derecha */}
-          <div className="ml-8">
-            <div className="bg-gray-300 w-32 h-32 rounded-full flex items-center justify-center">
-              <svg className="w-24 h-24 text-gray-700" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5z" /> 
-              </svg>
+            <div className="mt-4">
+              <button
+                onClick={handleBack}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
+              >
+                Volver
+              </button>
+              <button
+                onClick={() => alert("Datos confirmados y enviados")}
+                className="ml-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
+              >
+                Confirmar y Enviar
+              </button>
             </div>
-          </div>
-        </div>
-        
-        {/* Historial Académico (sin funcionalidad de arrastrar archivo) */}
-        <div className="mt-8">
-          <h2 className="font-bold text-xl mb-4">Historial académico</h2>
-          <div className="bg-gray-300 p-6 rounded-lg flex justify-center items-center">
-          <svg
-  xmlns="http://www.w3.org/2000/svg"
-  className="h-16 w-16 text-gray-700"
-  fill="none"
-  viewBox="0 0 24 24"
-  stroke="currentColor"
-  strokeWidth="2"
->
-  <path
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    d="M16 12v8a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2h6a2 2 0 012 2v4h4a2 2 0 012 2v2"
-  />
-  <path
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    d="M14 2l6 6m-3 4v6m-3-3h6"
-  />
-</svg>
-
-            <p className="ml-4 text-gray-600 text-center">
-              Arrastra el archivo o examinar
-            </p>
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );
