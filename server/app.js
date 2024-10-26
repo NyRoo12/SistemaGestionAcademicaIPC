@@ -1,6 +1,5 @@
 require("dotenv").config(); // <-- Carga las variables de entorno
 const express = require("express");
-const connection = require("./config/db");
 const app = express();
 const cors = require("cors"); // Importa el paquete cors
 
