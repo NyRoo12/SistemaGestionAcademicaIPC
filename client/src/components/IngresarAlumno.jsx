@@ -11,8 +11,8 @@ function IngresarAlumno() {
   });
 
   const [data, setData] = useState([]);
-  const [fileName, setFileName] = useState(""); // Estado para almacenar el nombre del archivo cargado
-  const [step, setStep] = useState(1); // Estado para manejar el paso actual (1: formulario, 2: confirmar)
+  const [fileName, setFileName] = useState("");
+  const [step, setStep] = useState(1);
 
   const handleInputChange = (field, value) => {
     setStudent({ ...student, [field]: value });
@@ -20,7 +20,7 @@ function IngresarAlumno() {
 
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
-    setFileName(file.name); // Guardar el nombre del archivo
+    setFileName(file.name);
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -28,40 +28,57 @@ function IngresarAlumno() {
       const workbook = XLSX.read(binaryStr, { type: 'binary' });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }); // Usamos header: 1 para obtener todas las filas sin encabezados
 
-      const editableData = jsonData.map((row) => ({
-        ...row,
-        isEditing: false,
-      }));
+      // Procesamiento de bloques
+      const processedData = [];
+      jsonData.forEach((row) => {
+        if (
+          row.length > 0 &&
+          !row[0].includes("Situación Periodo") &&
+          !row[0].includes("P.S.P.") &&
+          !row[0].includes("Situación Acumulada") &&
+          !row[0].includes("P.G.A.")
+        ) {
+          processedData.push({
+            Código: row[0] || "",
+            Nombre: row[1] || "",
+            Nota: row[2] || "",
+            Régimen: row[3] || "",
+            Nivel: row[4] || "",
+            Año: row[5] || "",
+            Periodo: row[6] || "",
+            Créditos: row[7] || "",
+            HrsPresenciales: row[8] || "",
+            Estado: row[9] || "",
+          });
+        }
+      });
 
-      setData(editableData);
+      setData(processedData);
     };
     reader.readAsBinaryString(file);
   };
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: '.xls, .xlsx' });
 
-  // Función para eliminar el archivo cargado
   const handleDeleteFile = () => {
     setData([]);
     setFileName("");
   };
 
-  // Función para cambiar al siguiente paso
   const handleContinue = () => {
-    setStep(2); // Cambia al paso 2 (confirmar datos)
+    setStep(2);
   };
 
   const handleBack = () => {
-    setStep(1); // Volver al paso 1 (formulario)
+    setStep(1);
   };
 
   return (
     <div className="p-8 bg-gray-100 h-screen flex justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-2/3">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-2/3 overflow-y-auto">
         {step === 1 ? (
-          // Mostrar formulario en el paso 1
           <>
             <div className="flex items-start justify-between">
               <div className="grid grid-cols-2 gap-4 flex-grow">
@@ -127,16 +144,15 @@ function IngresarAlumno() {
                   </button>
                 </div>
               )}
-
+              {/*}
               {data.length > 0 && (
                 <div className="mt-4">
                   <h3>Datos del archivo Excel cargados:</h3>
                   <pre>{JSON.stringify(data, null, 2)}</pre>
                 </div>
-              )}
+              )}*/}
             </div>
 
-            {/* Botón de continuar */}
             <button
               onClick={handleContinue}
               className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -145,7 +161,6 @@ function IngresarAlumno() {
             </button>
           </>
         ) : (
-          // Mostrar confirmación de datos en el paso 2
           <>
             <h2 className="text-2xl font-bold mb-6">Confirmar Datos del Alumno</h2>
             <div className="mb-8">
@@ -182,8 +197,8 @@ function IngresarAlumno() {
                     <th>Nivel</th>
                     <th>Año</th>
                     <th>Periodo</th>
-                    <th>Créditos (SCT)</th>
-                    <th>Hrs. presenciales</th>
+                    <th>Créditos</th>
+                    <th>Hrs. Presenciales</th>
                     <th>Estado</th>
                   </tr>
                 </thead>
@@ -197,8 +212,8 @@ function IngresarAlumno() {
                       <td>{row.Nivel}</td>
                       <td>{row.Año}</td>
                       <td>{row.Periodo}</td>
-                      <td>{row["Créditos(sct)"]}</td>
-                      <td>{row["Hrs. presenciales"]}</td>
+                      <td>{row.Créditos}</td>
+                      <td>{row.HrsPresenciales}</td>
                       <td>{row.Estado}</td>
                     </tr>
                   ))}
@@ -206,7 +221,8 @@ function IngresarAlumno() {
               </table>
             </div>
 
-            <div className="mt-4">
+             {/* Botones Volver y Confirmar fuera del recuadro del historial académico */}
+             <div className="flex justify-end mt-4 space-x-2">
               <button
                 onClick={handleBack}
                 className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
@@ -215,9 +231,9 @@ function IngresarAlumno() {
               </button>
               <button
                 onClick={() => alert("Datos confirmados y enviados")}
-                className="ml-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
               >
-                Confirmar y Enviar
+                Confirmar
               </button>
             </div>
           </>
