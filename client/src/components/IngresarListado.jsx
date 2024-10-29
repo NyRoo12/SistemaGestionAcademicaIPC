@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const IngresarAlumno = () => {
   const [students, setStudents] = useState([]); // Estado para almacenar datos de estudiantes
@@ -30,7 +30,6 @@ const IngresarAlumno = () => {
     // Forzar la codificación UTF-8 para caracteres especiales
     reader.readAsText(file, "UTF-8");
   };
-  
 
   // Renderizado del formulario
   return (
@@ -53,29 +52,32 @@ const IngresarAlumno = () => {
         {/* Vista previa de estudiantes cargados */}
         <div className="mt-8">
           <h2 className="font-bold text-xl mb-4">Vista Previa de Estudiantes Cargados</h2>
-          {students.length > 0 ? (
-            <table className="min-w-full bg-white">
-              <thead>
-                <tr>
-                  <th className="py-2">RUT</th>
-                  <th className="py-2">Nombre</th>
-                  <th className="py-2">Año</th>
-                </tr>
-              </thead>
-              <tbody>
-                {students.map((student, index) => (
-                  <tr key={index}>
-                    <td className="border px-4 py-2">{student.nombre}</td>
-                    <td className="border px-4 py-2">{student.rut}</td>
-                    <td className="border px-4 py-2">{student.carrera}</td>
-                    <td className="border px-4 py-2">{student.año}</td>
+          <div className="max-h-64 overflow-y-auto"> {/* Contenedor de desplazamiento */}
+            {students.length > 0 ? (
+              <table className="min-w-full bg-white">
+                <thead>
+                  <tr>
+                    <th className="py-2">RUT</th>
+                    <th className="py-2">Nombre</th>
+                    <th className="py-2">Carrera</th>
+                    <th className="py-2">Año</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p className="text-gray-600">No hay estudiantes cargados aún.</p>
-          )}
+                </thead>
+                <tbody>
+                  {students.map((student, index) => (
+                    <tr key={index}>
+                      <td className="border px-4 py-2">{student.nombre}</td>
+                      <td className="border px-4 py-2">{student.rut}</td>
+                      <td className="border px-4 py-2">{student.carrera}</td>
+                      <td className="border px-4 py-2">{student.año}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-gray-600">No hay estudiantes cargados aún.</p>
+            )}
+          </div>
         </div>
 
         {/* Botón para enviar los datos al backend */}
