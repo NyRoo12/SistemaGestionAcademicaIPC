@@ -2,12 +2,12 @@ import React, { useEffect, useState, Suspense, lazy } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import NavBar from "./components/navbar.jsx";
 import SearchBar from "./components/SearchBar.jsx";
-import Login from "./components/login.jsx";
+import Login from "./pages/login.jsx";
 
-const IngresarAlumno = lazy(() => import("./components/IngresarAlumno.jsx"));
+const IngresarAlumno = lazy(() => import("./pages/IngresarAlumno.jsx"));
 const EstudianteDetalle = lazy(() => import("./components/EstudianteDetalle.jsx"));
-const BotonesAlumnos = lazy(() => import("./components/botonesAlumnos.jsx"));
-const IngresarListado = lazy(() => import("./components/IngresarListado.jsx"));
+const BotonesAlumnos = lazy(() => import("./pages/botonesAlumnos.jsx"));
+const IngresarListado = lazy(() => import("./pages/IngresarListado.jsx"));
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para controlar si el usuario está logueado

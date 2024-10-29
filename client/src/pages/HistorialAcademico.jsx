@@ -1,5 +1,5 @@
 import React from "react";
-import TarjetaHistorial from "./TarjetaHistorial.jsx";
+import TarjetaHistorial from "../components/TarjetaHistorial.jsx";
 
 const HistorialAcademico = ({
   historial,

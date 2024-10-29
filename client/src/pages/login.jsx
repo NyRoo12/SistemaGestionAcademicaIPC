@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom"; // Importar useNavigate
-import ipc from "./images/ipc.png";
+import ipc from "../components/images/ipc.png";
 
 const Login = ({ onLogin }) => {
   const [password, setPassword] = useState('');

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import DetallesEstudiante from "./DetallesEstudiante.jsx";
 import BotonEquivalencias from "./BotonEquivalencias.jsx";
-import HistorialAcademico from "./HistorialAcademico.jsx";
+import HistorialAcademico from "../pages/HistorialAcademico.jsx";
 
 const EstudianteDetalle = () => {
   const { rut } = useParams();
