@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom"; // Importar useNavigate
-import ipc from "./images/ipc.png";
+import ipc from "../components/images/ipc.png";
 
 const Login = ({ onLogin }) => {
   const [password, setPassword] = useState('');
@@ -65,9 +65,9 @@ const Login = ({ onLogin }) => {
             <p className="text-red-500 mt-2">{error}</p>
           )}
         </div>
-        <div className="mt-8 flex flex-col">
+        <div className="flex justify-center mb-4 my-3">
           <button
-            className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01] ease-in-out py-3 rounded-xl bg-emerald-600 text-white text-lg font-bold"
+            className="bg-blue-500 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
             type="submit"
           >
             Entrar
