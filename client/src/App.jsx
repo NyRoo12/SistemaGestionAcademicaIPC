@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import NavBar from "./components/navbar.jsx";
 import SearchBar from "./components/SearchBar.jsx";
@@ -16,6 +16,14 @@ export default function App() {
     setIsLoggedIn(true); // Cambiar el estado a "logueado" cuando el usuario se autentique
   };
 
+  useEffect(() => {
+    // Desactiva el scroll en el <body>
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto"; // Restablece el scroll al desmontar
+    };
+  }, []);
+
   return (
     <Router>
       {isLoggedIn ? (
@@ -23,20 +31,22 @@ export default function App() {
           <header>
             <NavBar />
           </header>
-          <main>
-            <Suspense fallback={<div>Loading...</div>}>
-              <Routes>
-                <Route path="/" element={<SearchBar />} /> {/* Página principal de control de botones */}
-                <Route path="/botones-a" element={<BotonesAlumnos />} /> {/* Ruta de búsqueda */}
-                <Route path="/ingresar-alumno" element={<IngresarAlumno />} /> {/* Carga masiva */}
-                <Route path="/ingresar-listado" element={<IngresarListado />} /> {/* Ingreso manual */}
-                <Route path="/estudiante/:rut" element={<EstudianteDetalle />} />
-              </Routes>
-            </Suspense>
-          </main>
+          <div className="App h-screen overflow-hidden">
+            <main>
+              <Suspense fallback={<div>Loading...</div>}>
+                <Routes>
+                  <Route path="/" element={<SearchBar />} />
+                  <Route path="/botones-a" element={<BotonesAlumnos />} />
+                  <Route path="/ingresar-alumno" element={<IngresarAlumno />} />
+                  <Route path="/ingresar-listado" element={<IngresarListado />} />
+                  <Route path="/estudiante/:rut" element={<EstudianteDetalle />} />
+                </Routes>
+              </Suspense>
+            </main>
+          </div>
         </>
       ) : (
-        <Login onLogin={handleLogin} /> // Mostrar la página de login si el usuario no está logueado
+        <Login onLogin={handleLogin} />
       )}
     </Router>
   );
