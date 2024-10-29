@@ -1,5 +1,5 @@
 import React from "react";
-import TarjetaHistorial from "./TarjetaHistorial.jsx";
+import TarjetaHistorial from "../components/TarjetaHistorial.jsx";
 
 const HistorialAcademico = ({
   historial,
@@ -11,7 +11,9 @@ const HistorialAcademico = ({
       <h2 className="text-2xl font-bold mb-4 text-center">
         Historial Académico
       </h2>
-      <div className="flex justify-center flex-wrap transition-all duration-500 ease-in-out">
+
+      {/* Contenedor con desplazamiento para las tarjetas */}
+      <div className="flex justify-center overflow-y-auto max-h-96 flex-wrap transition-all duration-500 ease-in-out">
         <TarjetaHistorial
           key={-1}
           codigoIPC="Codigo"

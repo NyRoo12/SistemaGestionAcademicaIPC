@@ -11,7 +11,7 @@ const SearchBar = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://146.83.216.166:4006/api/estudiantes`);
+        const response = await fetch(`http://localhost:3001/api/estudiantes`);
         if (!response.ok) {
           throw new Error("Error en la solicitud");
         }
@@ -29,9 +29,8 @@ const SearchBar = () => {
     e.preventDefault();
     setSearchPerformed(true); // Marca que se realizó una búsqueda
     try {
-
       const response = await fetch(
-        `http://146.83.216.166:4006/api/estudiantes/buscar?query=${encodeURIComponent(query)}`
+        `http://localhost:3001/api/estudiantes/buscar?query=${encodeURIComponent(query)}`
       );
       if (!response.ok) {
         throw new Error("Error en la solicitud");
