@@ -51,6 +51,21 @@ router.get("/buscar", (req, res) => {
   });
 });
 
+router.get('/verificarNombre', (req, res) => {
+  const { nombre } = req.query;
+  connection.query(
+    'SELECT * FROM estudiantes WHERE nombre = ?',
+    [nombre],
+    (err, results) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.json({ exists: results.length > 0 });
+      }
+    }
+  );
+});
+
 router.get("/obtenerDetalle", (req, res) => {
   const { query: rut } = req.query;
 

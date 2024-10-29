@@ -61,7 +61,7 @@ function NavBar() {
 
           {/* Enlace 2 */}
           <Link
-            to="/ingresar-alumno"
+            to="/botones-a"
             onClick={() => handleSelect('ingresar')}
             className={`${
               selected === 'ingresar' ? 'text-black' : 'text-gray-300 hover:text-white'
