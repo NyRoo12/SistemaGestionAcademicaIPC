@@ -1,9 +1,13 @@
-import Estudiante from "../models/Estudiantes.js";
+import { Estudiante } from "../models/Estudiantes.js";
+import Op from "sequelize";
 
 // Obtener todos los estudiantes
-export async function obtenerTodos_() {
+export async function getEstudiantes_() {
   try {
-    const estudiantes = await Estudiante.findAll();
+    const estudiantes = await Estudiante.findAll({
+      attributes: ["nombre", "rut", "carreraDestino", "ano"],
+      order: [["nombre", "DESC"]],
+    });
     return estudiantes;
   } catch (error) {
     throw new Error("Error al obtener todos los estudiantes");
@@ -11,12 +15,13 @@ export async function obtenerTodos_() {
 }
 
 // Crear un nuevo estudiante
-export async function crearEstudiante_(estudiante) {
+export async function createEstudiante_(estudiante) {
+  const { nombre, rut, carreraDestino } = estudiante
   try {
     const nuevoEstudiante = await Estudiante.create({
-      nombre: estudiante.nombre,
-      rut: estudiante.rut,
-      carreraDestino: estudiante.carreraDestino,
+      nombre,
+      rut,
+      carreraDestino,
     });
     return nuevoEstudiante;
   } catch (error) {
@@ -25,25 +30,23 @@ export async function crearEstudiante_(estudiante) {
 }
 
 // Buscar estudiantes por nombre o RUT
-export async function buscar_(query) {
+export async function getEstudiante_(query) {
   try {
     const searchValue = `%${query}%`;
     const estudiantes = await Estudiante.findAll({
       where: {
-        [Op.or]: [
-          { nombre: { [Op.like]: searchValue } },
-          { rut: { [Op.like]: searchValue } },
-        ],
-      },
+        rut: query
+      }
     });
+    // console.log(estudiantes);
     return estudiantes;
   } catch (error) {
-    throw new Error("Error al buscar estudiantes");
+    console.log("Error al buscar estudiantes");
   }
 }
 
 // Obtener detalle de un estudiante por RUT
-export async function obtenerDetalle_(rut) {
+export async function getDetalle_(rut) {
   try {
     const estudiante = await Estudiante.findOne({
       where: { rut: rut },

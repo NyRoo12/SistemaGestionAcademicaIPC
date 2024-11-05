@@ -7,7 +7,7 @@ export const Estudiante = sequelize.define(
   {
     nombre: {
       type: DataTypes.STRING(100), // varchar(100)
-      allowNull: true, // DEFAULT NULL
+      allowNull: false, // DEFAULT NULL
     },
     rut: {
       type: DataTypes.STRING(20), // varchar(20)
@@ -16,7 +16,11 @@ export const Estudiante = sequelize.define(
     },
     carreraDestino: {
       type: DataTypes.STRING(50), // varchar(50)
-      allowNull: true, // DEFAULT NULL
+      allowNull: false, // DEFAULT NULL
+    },
+    ano: {
+      type: DataTypes.INTEGER, // varchar(50)
+      allowNull: false, // DEFAULT NULL
     },
   },
   {

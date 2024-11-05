@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import { User } from "../models/User.js";
 
 export async function getUserPassword_() {
   try {
@@ -6,6 +6,7 @@ export async function getUserPassword_() {
       attributes: ['hashed_password'], // Solo selecciona el atributo hashed_password
       limit: 1 // Limita el resultado a 1
     });
+    console.log("Resultado de la búsqueda:", users);
     return users; // Retorna el resultado
   } catch (error) {
     console.error('Error al obtener los usuarios:', error);

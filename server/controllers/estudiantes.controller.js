@@ -1,46 +1,42 @@
-import { obtenerTodos_, crearEstudiante_, buscar_, obtenerDetalle_ } from "../repository/estudiantes.repository.js";
+import { getEstudiantes_, createEstudiantes_, getEstudiante_, getDetalle_ } from "../repository/estudiantes.repository.js";
 
-export async function obtenerTodosEstudiantes(req, res) {
-  obtenerTodos_((err, results) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.json(results);
-    }
-  });
+export async function getEstudiantes(req, res) {
+  getEstudiantes_().then(data => {
+    res.json(data)
+    // res.status(200).json({status : true, data : data})
+  }, error => {
+    res.status(400).json({status : false, error : error.message })
+  })
 }
 
-export async function crearEstudiante(req, res) {
-  const { nombre, rut, carreraDestino } = req.body;
-
-  crearEstudiante_({ nombre, rut, carreraDestino }, (err, result) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.status(201).send("Estudiante creado con éxito");
-    }
-  });
-}
-
-export async function buscarEstudiantes(req, res) {
-  const { query } = req.query;
-
-  if (!query) {
-    return res
-      .status(400)
-      .json({ error: "El parámetro de búsqueda es necesario" });
+export async function createEstudiante(req, res) {
+  const { nombre, rut, carreraDestino, ano } = req.body;
+  const estudiante = {
+    nombre,
+    rut,
+    carreraDestino,
+    ano
   }
 
-  buscar_(query, (err, results) => {
-    if (err) {
-      res.status(500).json({ error: "Error en la base de datos" });
-    } else {
-      res.json(results);
-    }
-  });
+  createEstudiante_(estudiante).then(data => {
+    res.status(500).send(err);
+  }, error => {
+    res.status(201).send("Estudiante creado con éxito");
+  })
 }
 
-export async function obtenerDetalleEstudiante(req, res) {
+export async function getEstudiante(req, res) {
+  const { query } = req.query;
+
+  getEstudiante_(query).then(data => {
+    res.json(data)
+    // res.status(200).json({status : true, data : data})
+  }, error => {
+    res.status(400).json({status : false, error : error.message })
+  })
+}
+
+export async function getDetalle(req, res) {
   const { query: rut } = req.query;
 
   if (!rut) {
@@ -49,13 +45,20 @@ export async function obtenerDetalleEstudiante(req, res) {
       .json({ error: "El RUT es necesario para la búsqueda" });
   }
 
-  obtenerDetalle_(rut, (err, result) => {
-    if (err) {
-      res.status(500).json({ error: "Error en la base de datos" });
-    } else if (result.length === 0) {
-      res.status(404).json({ error: "Estudiante no encontrado" });
-    } else {
-      res.json(result[0]); // Retornar solo el primer resultado
-    }
-  });
+  getDetalle_(rut).then(data => {
+    res.json(data[0]);
+    // res.status(200).json({status : true, data : data})
+  }, error => {
+    res.status(400).json({status : false, error : error.message })
+  })
+
+  // getDetalle_(rut, (err, result) => {
+  //   if (err) {
+  //     res.status(500).json({ error: "Error en la base de datos" });
+  //   } else if (result.length === 0) {
+  //     res.status(404).json({ error: "Estudiante no encontrado" });
+  //   } else {
+  //     res.json(result[0]); // Retornar solo el primer resultado
+  //   }
+  // });
 }

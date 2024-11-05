@@ -5,7 +5,6 @@ import {
 
 const router = Router();
 
-
 // Ruta para el login
 router.post('/login', getUserPassword);
 

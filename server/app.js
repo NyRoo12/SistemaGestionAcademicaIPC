@@ -1,29 +1,34 @@
-require("dotenv").config(); // <-- Carga las variables de entorno
-const express = require("express");
+import express from "express";
+import cors from "cors";
+import dotenv from 'dotenv';
+
+//init
+dotenv.config();
 const app = express();
-const cors = require("cors"); // Importa el paquete cors
-
-app.use(express.json()); // Permite manejar JSON
-
-app.use(cors()); // Usa cors en toda la aplicación
 
 // Importar rutas
-const estudiantesRoutes = require("./routes/estudiantes");
-const asignaturasIPCRoutes = require("./routes/asignaturasIpc");
-const historialAcademicoRoutes = require("./routes/historialAcademico");
-const asignaturasEquivalentesRoutes = require("./routes/asignaturasEquivalentes.routes");
-const loginRoutes = require("./routes/login"); // Corregir el nombre para que coincida
+import estudiantesRoutes from './routes/estudiantes.routes.js';
+import asignaturasIPCRoutes from './routes/asignaturasIpc.routes.js';
+import historialAcademicoRoutes from './routes/historialAcademico.routes.js';
+import asignaturasEquivalentesRoutes from './routes/asignaturasEquivalentes.routes.js';
+import userRoutes from './routes/user.routes.js'; // Asegúrate de que el nombre y el archivo coincidan
+
+app.use(express.json());
+
+// Configura CORS
+app.use(
+  cors({
+    origin: [process.env.ORIGIN],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Usar las rutas
 app.use("/api/estudiantes", estudiantesRoutes);
 app.use("/api/asignaturasIPC", asignaturasIPCRoutes);
 app.use("/api/historialAcademico", historialAcademicoRoutes);
 app.use("/api/asignaturasEquivalentes", asignaturasEquivalentesRoutes);
-app.use("/api/login", loginRoutes); // Usa loginRoutes en lugar de login
+app.use("/api/login", userRoutes); // Usa loginRoutes en lugar de login
 
-const PORT = process.env.PORT || 3001;
-
-// Escuchar en el puerto definido
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
+export default app;
