@@ -15,9 +15,7 @@ const EstudianteDetalle = () => {
     const fetchEstudiante = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/estudiantes/obtenerDetalle?query=${encodeURIComponent(
-            rut
-          )}`
+          `http://localhost:3001/api/estudiantes/obtenerDetalle?query=${encodeURIComponent(rut)}`
         );
         if (!response.ok) {
           throw new Error("Error al obtener el estudiante");
@@ -36,9 +34,7 @@ const EstudianteDetalle = () => {
     const fetchHistorial = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/historialAcademico/obtenerHistorial?query=${encodeURIComponent(
-            rut
-          )}`
+          `http://localhost:3001/api/historialAcademico/obtenerHistorial?query=${encodeURIComponent(rut)}`
         );
         if (!response.ok) {
           throw new Error("Error al obtener el historial");
@@ -58,9 +54,7 @@ const EstudianteDetalle = () => {
       const fetchEquivalencias = async () => {
         try {
           const response = await fetch(
-            `http://localhost:3001/api/equivalencias/obtenerEquivalencias?query=${encodeURIComponent(
-              rut
-            )}`
+            `http://localhost:3001/api/equivalencias/obtenerEquivalencias?query=${encodeURIComponent(rut)}`
           );
           if (!response.ok) {
             throw new Error("Error al obtener las equivalencias");
@@ -83,17 +77,23 @@ const EstudianteDetalle = () => {
   };
 
   return (
-    <div className="min-h-screen p-8 bg-gray-100">
-      <DetallesEstudiante estudiante={estudiante} />
-      <BotonEquivalencias
-        mostrarEquivalencias={mostrarEquivalencias}
-        onClick={handleClick}
-      />
-      <HistorialAcademico
-        historial={historial}
-        equivalencias={equivalencias}
-        mostrarEquivalencias={mostrarEquivalencias}
-      />
+    <div className="min-h-screen p-8 bg-gray-100 flex flex-col">
+      <div className="flex mb-4">
+        <div className="w-1/3 pr-4"> {/* Información del estudiante a la izquierda */}
+          <DetallesEstudiante estudiante={estudiante} />
+          <BotonEquivalencias
+            mostrarEquivalencias={mostrarEquivalencias}
+            onClick={handleClick}
+          />
+        </div>
+        <div className="w-2/3"> {/* Historial académico a la derecha */}
+          <HistorialAcademico
+            historial={historial}
+            equivalencias={equivalencias}
+            mostrarEquivalencias={mostrarEquivalencias}
+          />
+        </div>
+      </div>
     </div>
   );
 };

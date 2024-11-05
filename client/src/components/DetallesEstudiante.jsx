@@ -2,7 +2,7 @@ import React from "react";
 
 const DetallesEstudiante = ({ estudiante }) => {
   return (
-    <div className="mb-8 p-4 bg-white rounded-lg shadow-lg">
+    <div className="mb-8 p-4 bg-white rounded-lg shadow-lg max-w-xs"> {/* Ajusta el ancho máximo aquí */}
       <h2 className="text-xl font-bold mb-4">Detalles del Estudiante</h2>
       {estudiante ? (
         <div className="flex items-center">
