@@ -1,4 +1,3 @@
-import { AsignaturasIPC } from "../models/AsignaturasIPC.js";
 import {getAsignaturasIPC_} from "../repository/asignaturasIpc.repository.js";
 
 export async function getAsignaturasIPC(req, res) {

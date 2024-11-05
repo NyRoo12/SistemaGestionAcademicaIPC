@@ -1,14 +1,13 @@
-const equivalenciasModel = require("../models/equivalenciasModel");
+import {getHistorial_, getEquivalencias_} from "../repository/asignaturasEquivalentes.repository.js";
 
-exports.obtenerEquivalencias = (req, res) => {
+export async function getEquivalencias(req, res) {
   const { query: rut } = req.query;
 
   if (!rut) {
     return res.status(400).json({ error: "El RUT es necesario para obtener las equivalencias" });
   }
 
-  // Obtener el historial académico del estudiante
-  equivalenciasModel.obtenerHistorial(rut, (errorHistorial, resultsHistorial) => {
+  getHistorial_(rut, (errorHistorial, resultsHistorial) => {
     if (errorHistorial) {
       console.error("Error en la consulta del historial académico:", errorHistorial);
       return res.status(500).json({ error: "Error en la base de datos" });
@@ -18,8 +17,7 @@ exports.obtenerEquivalencias = (req, res) => {
       return res.status(404).json({ error: "No se encontraron asignaturas en el historial académico" });
     }
 
-    // Obtener las equivalencias en la carrera de destino
-    equivalenciasModel.obtenerEquivalencias(rut, (errorEquivalencias, resultsEquivalencias) => {
+    getEquivalencias_(rut, (errorEquivalencias, resultsEquivalencias) => {
       if (errorEquivalencias) {
         console.error("Error en la consulta de equivalencias:", errorEquivalencias);
         return res.status(500).json({ error: "Error en la base de datos" });

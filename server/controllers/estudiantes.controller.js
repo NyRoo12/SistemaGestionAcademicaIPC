@@ -1,51 +1,55 @@
-const estudiantesModel = require("../models/estudiantesModel");
+import { obtenerTodos_, crearEstudiante_, buscar_, obtenerDetalle_ } from "../repository/estudiantes.repository.js";
 
-exports.obtenerTodosEstudiantes = (req, res) => {
-  estudiantesModel.obtenerTodos((err, results) => {
+export async function obtenerTodosEstudiantes(req, res) {
+  obtenerTodos_((err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
       res.json(results);
     }
   });
-};
+}
 
-exports.crearEstudiante = (req, res) => {
+export async function crearEstudiante(req, res) {
   const { nombre, rut, carreraDestino } = req.body;
 
-  estudiantesModel.crear({ nombre, rut, carreraDestino }, (err, result) => {
+  crearEstudiante_({ nombre, rut, carreraDestino }, (err, result) => {
     if (err) {
       res.status(500).send(err);
     } else {
       res.status(201).send("Estudiante creado con éxito");
     }
   });
-};
+}
 
-exports.buscarEstudiantes = (req, res) => {
+export async function buscarEstudiantes(req, res) {
   const { query } = req.query;
 
   if (!query) {
-    return res.status(400).json({ error: "El parámetro de búsqueda es necesario" });
+    return res
+      .status(400)
+      .json({ error: "El parámetro de búsqueda es necesario" });
   }
 
-  estudiantesModel.buscar(query, (err, results) => {
+  buscar_(query, (err, results) => {
     if (err) {
       res.status(500).json({ error: "Error en la base de datos" });
     } else {
       res.json(results);
     }
   });
-};
+}
 
-exports.obtenerDetalleEstudiante = (req, res) => {
+export async function obtenerDetalleEstudiante(req, res) {
   const { query: rut } = req.query;
 
   if (!rut) {
-    return res.status(400).json({ error: "El RUT es necesario para la búsqueda" });
+    return res
+      .status(400)
+      .json({ error: "El RUT es necesario para la búsqueda" });
   }
 
-  estudiantesModel.obtenerDetalle(rut, (err, result) => {
+  obtenerDetalle_(rut, (err, result) => {
     if (err) {
       res.status(500).json({ error: "Error en la base de datos" });
     } else if (result.length === 0) {
@@ -54,4 +58,4 @@ exports.obtenerDetalleEstudiante = (req, res) => {
       res.json(result[0]); // Retornar solo el primer resultado
     }
   });
-};
+}

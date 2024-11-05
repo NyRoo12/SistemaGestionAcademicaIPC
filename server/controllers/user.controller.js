@@ -1,11 +1,11 @@
-const loginModel = require("../models/loginModel");
+import {getUserPassword_} from "../repository/user.repository.js";
 const bcrypt = require("bcryptjs");
 
-exports.login = (req, res) => {
+export async function getUserPassword(req, res) {
   const { password } = req.body;
 
   // Consultar la base de datos para obtener el hash de la contraseña
-  loginModel.getUserPassword((err, result) => {
+  getUserPassword_((err, result) => {
     if (err) {
       return res.status(500).json({ error: 'Error de servidor' });
     }
