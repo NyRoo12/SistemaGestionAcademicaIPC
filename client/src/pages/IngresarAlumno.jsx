@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDropzone } from 'react-dropzone';
 import * as XLSX from 'xlsx';
 
@@ -13,8 +13,35 @@ function IngresarAlumno() {
   const [data, setData] = useState([]);
   const [fileName, setFileName] = useState("");
   const [step, setStep] = useState(1);
+  const [careers, setCareers] = useState([]);
+
+
+  useEffect(() => {
+    const fetchCareers = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/api/estudiantes`); // Endpoint correcto para carreras
+        if (!response.ok) throw new Error("Error en la solicitud");
+        const result = await response.json();
+        setCareers(result);
+      } catch (error) {
+        console.error("Error fetching careers:", error);
+      }
+    };
+    fetchCareers();
+  }, []);
+
+  // Función para formatear el RUT
+  const formatRUT = (value) => {
+    if (!value) return ""; // Devuelve cadena vacía si el valor está vacío
+    return value.replace(/^(\d{1,2})(\d{3})(\d{3})(\d{1})$/, "$1.$2.$3-$4");
+  };
 
   const handleInputChange = (field, value) => {
+    if (field === "rut") {
+      // Limitar a 9 caracteres y formatear el RUT
+      value = value.replace(/\D/g, '').slice(0, 9); // Remueve caracteres no numéricos y limita a 9
+      value = formatRUT(value);
+    }
     setStudent({ ...student, [field]: value });
   };
 
@@ -98,17 +125,24 @@ function IngresarAlumno() {
                     value={student.rut}
                     onChange={(e) => handleInputChange("rut", e.target.value)}
                     className="w-full px-3 py-2 border rounded"
+                    placeholder="Ejemplo: 12.345.678-9"
                   />
                 </div>
                 <div className="col-span-1">
-                  <label className="block font-semibold mb-2">Carrera Destino:</label>
-                  <input
-                    type="text"
-                    value={student.carrera}
-                    onChange={(e) => handleInputChange("carrera", e.target.value)}
-                    className="w-full px-3 py-2 border rounded"
-                  />
-                </div>
+                    <label className="block font-semibold mb-2">Carrera Destino:</label>
+                    <select
+                        value={student.carrera}
+                        onChange={(e) => handleInputChange("carrera", e.target.value)}
+                        className="w-full px-3 py-2 border rounded"
+                      >
+                        <option value="">Selecciona una carrera</option>
+                        {careers.map((career, index) => (
+                          <option key={index} value={career.carrera}>
+                            {career.carrera}
+                          </option>
+                        ))}
+                      </select>
+                  </div>
                 <div className="col-span-1">
                   <label className="block font-semibold mb-2">Año de Ingreso:</label>
                   <input
@@ -144,13 +178,6 @@ function IngresarAlumno() {
                   </button>
                 </div>
               )}
-              {/*}
-              {data.length > 0 && (
-                <div className="mt-4">
-                  <h3>Datos del archivo Excel cargados:</h3>
-                  <pre>{JSON.stringify(data, null, 2)}</pre>
-                </div>
-              )}*/}
             </div>
 
             <button
@@ -221,7 +248,6 @@ function IngresarAlumno() {
               </table>
             </div>
 
-             {/* Botones Volver y Confirmar fuera del recuadro del historial académico */}
              <div className="flex justify-end mt-4 space-x-2">
               <button
                 onClick={handleBack}
