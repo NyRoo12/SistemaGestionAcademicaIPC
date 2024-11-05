@@ -7,13 +7,13 @@ const HistorialAcademico = ({
   mostrarEquivalencias,
 }) => {
   return (
-    <div>
+    <div className="relative">
       <h2 className="text-2xl font-bold mb-4 text-center">
         Historial Académico
       </h2>
 
       {/* Tarjeta estática con encabezados */}
-      <div className="flex justify-between text-sm bg-gray-800 p-2 rounded-lg shadow-lg mb-2"> {/* Cambiar text-lg a text-sm */}
+      <div className="flex justify-between text-sm bg-gray-800 p-2 rounded-lg shadow-lg mb-2">
         <div className="w-1/5">
           <p className="text-white">Código</p>
         </div>
@@ -72,9 +72,15 @@ const HistorialAcademico = ({
           <p>No hay historial académico disponible</p>
         )}
       </div>
+
+      {/* Botón de eliminar estudiante en la esquina inferior izquierda de la aplicación */}
+      <div className="fixed bottom-4 left-4">
+        <button className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out">
+          Eliminar Estudiante
+        </button>
+      </div>
     </div>
   );
 };
 
 export default HistorialAcademico;
-``
