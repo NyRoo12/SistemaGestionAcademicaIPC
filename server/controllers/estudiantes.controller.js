@@ -1,4 +1,4 @@
-import { getEstudiantes_, createEstudiantes_, getEstudiante_, getDetalle_ } from "../repository/estudiantes.repository.js";
+import { getEstudiantes_, createEstudiante_, getEstudiante_, getDetalle_ } from "../repository/estudiantes.repository.js";
 
 export async function getEstudiantes(req, res) {
   getEstudiantes_().then(data => {
@@ -46,19 +46,9 @@ export async function getDetalle(req, res) {
   }
 
   getDetalle_(rut).then(data => {
-    res.json(data[0]);
+    res.json(data);
     // res.status(200).json({status : true, data : data})
   }, error => {
     res.status(400).json({status : false, error : error.message })
   })
-
-  // getDetalle_(rut, (err, result) => {
-  //   if (err) {
-  //     res.status(500).json({ error: "Error en la base de datos" });
-  //   } else if (result.length === 0) {
-  //     res.status(404).json({ error: "Estudiante no encontrado" });
-  //   } else {
-  //     res.json(result[0]); // Retornar solo el primer resultado
-  //   }
-  // });
 }

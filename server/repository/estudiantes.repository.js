@@ -1,5 +1,5 @@
 import { Estudiante } from "../models/Estudiantes.js";
-import Op from "sequelize";
+import { Op } from 'sequelize';
 
 // Obtener todos los estudiantes
 export async function getEstudiantes_() {
@@ -32,16 +32,20 @@ export async function createEstudiante_(estudiante) {
 // Buscar estudiantes por nombre o RUT
 export async function getEstudiante_(query) {
   try {
-    const searchValue = `%${query}%`;
+    const searchValue = `${query}%`;
+    console.log(searchValue);
     const estudiantes = await Estudiante.findAll({
       where: {
-        rut: query
+        [Op.or]: [
+          { nombre: { [Op.like]: searchValue } },
+          { rut: { [Op.like]: searchValue } }
+        ]        
       }
     });
     // console.log(estudiantes);
     return estudiantes;
   } catch (error) {
-    console.log("Error al buscar estudiantes");
+    console.log("Error al buscar estudiantes", error);
   }
 }
 
