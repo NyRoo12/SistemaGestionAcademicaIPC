@@ -72,7 +72,7 @@ function NavBar() {
 
           {/* Enlace 3 */}
           <Link
-            to="/certificado"
+            to="/botones-c"
             onClick={() => handleSelect('certificado')}
             className={`${
               selected === 'certificado' ? 'text-black' : 'text-gray-300 hover:text-white'
