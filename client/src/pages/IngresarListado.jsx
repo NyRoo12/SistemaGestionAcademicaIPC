@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";  // Importa useNavigate
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 import * as XLSX from "xlsx";
 
 const IngresarListado = () => {
   const [students, setStudents] = useState([]);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();  // Hook de navegación
+  const navigate = useNavigate(); // Hook de navegación
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -21,16 +21,16 @@ const IngresarListado = () => {
         const lines = fileContent.split("\n");
 
         const loadedStudents = lines.map((line) => {
-          const [nombre, rut, carrera, año] = line.split(",");
-          return { nombre, rut, carrera, año };
+          const [rut, nombre, ano] = line.split(",");
+          return { rut, nombre, ano };
         });
 
         setStudents(loadedStudents);
+        console.log(loadedStudents);
         setError("");
       };
       reader.onerror = () => setError("Hubo un error al leer el archivo.");
       reader.readAsText(file, "UTF-8");
-
     } else if (fileName.endsWith(".xlsx")) {
       reader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
@@ -40,30 +40,35 @@ const IngresarListado = () => {
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
         const loadedStudents = jsonData.slice(1).map((row) => {
-          const [nombre, rut, carrera, año] = row;
-          return { nombre, rut, carrera, año };
+          const [rut, nombre, ano] = row;
+          return { rut, nombre, ano };
         });
 
         setStudents(loadedStudents);
+        console.log(loadedStudents);
         setError("");
       };
       reader.onerror = () => setError("Hubo un error al leer el archivo.");
       reader.readAsArrayBuffer(file);
-
     } else {
-      setError("Formato de archivo no soportado. Cargue un archivo CSV o Excel (.xlsx).");
+      setError(
+        "Formato de archivo no soportado. Cargue un archivo CSV o Excel (.xlsx)."
+      );
     }
   };
 
   const confirmSubmission = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/estudiantes/cargaMasiva", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(students),
-      });
+      const response = await fetch(
+        "http://localhost:3001/api/estudiantes/cargaMasiva",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(students),
+        }
+      );
       if (!response.ok) {
         throw new Error("Error en la carga masiva de estudiantes.");
       }
@@ -83,7 +88,9 @@ const IngresarListado = () => {
       <div className="bg-white p-8 rounded-lg shadow-lg w-2/3">
         <div className="flex items-start justify-between">
           <div className="col-span-2">
-            <h2 className="font-bold text-xl mb-4">Carga Masiva de Estudiantes</h2>
+            <h2 className="font-bold text-xl mb-4">
+              Carga Masiva de Estudiantes
+            </h2>
             <input
               type="file"
               accept=".csv, .xlsx"
@@ -95,8 +102,12 @@ const IngresarListado = () => {
         </div>
 
         <div className="mt-8">
-          <h2 className="font-bold text-xl mb-4">Vista Previa de Estudiantes Cargados</h2>
-          <div className="max-h-64 overflow-y-auto"> {/* Contenedor con desplazamiento vertical */}
+          <h2 className="font-bold text-xl mb-4">
+            Vista Previa de Estudiantes Cargados
+          </h2>
+          <div className="max-h-64 overflow-y-auto">
+            {" "}
+            {/* Contenedor con desplazamiento vertical */}
             {students.length > 0 ? (
               <table className="min-w-full bg-white">
                 <thead>
@@ -104,16 +115,14 @@ const IngresarListado = () => {
                     <th className="py-2">Nombre</th>
                     <th className="py-2">RUT</th>
                     <th className="py-2">Año</th>
-                    <th className="py-2">Ingreso</th>
                   </tr>
                 </thead>
                 <tbody>
                   {students.map((student, index) => (
                     <tr key={index}>
-                      <td className="border px-4 py-2">{student.rut}</td>
                       <td className="border px-4 py-2">{student.nombre}</td>
-                      <td className="border px-4 py-2">{student.carrera}</td>
-                      <td className="border px-4 py-2">{student.año}</td>
+                      <td className="border px-4 py-2">{student.rut}</td>
+                      <td className="border px-4 py-2">{student.ano}</td>
                     </tr>
                   ))}
                 </tbody>

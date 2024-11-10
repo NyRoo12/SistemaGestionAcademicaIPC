@@ -4,6 +4,8 @@ import {
   createEstudiante,
   getEstudiante,
   getDetalle,
+  cargaMasiva,
+  eliminarEstudiante,
 } from "../controllers/estudiantes.controller.js";
 
 const router = Router();
@@ -19,5 +21,11 @@ router.get("/buscar", getEstudiante);
 
 // Ruta para obtener el detalle de un estudiante por RUT
 router.get("/obtenerDetalle", getDetalle);
+
+// Ruta para cargar estudiantes de manera masiva
+router.post("/cargaMasiva", cargaMasiva);
+
+// Ruta para cargar estudiantes de manera masiva
+router.delete("/eliminarEstudiante", eliminarEstudiante);
 
 export default router;

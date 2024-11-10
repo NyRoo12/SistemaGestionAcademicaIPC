@@ -15,6 +15,8 @@ const IngresarAlumno = () => {
     const fileName = file.name;
     const reader = new FileReader();
 
+    console.log("Estudiantes cargados desde Excel:");
+
     if (fileName.endsWith(".csv")) {
       reader.onload = (e) => {
         const fileContent = e.target.result;
@@ -30,7 +32,6 @@ const IngresarAlumno = () => {
       };
       reader.onerror = () => setError("Hubo un error al leer el archivo.");
       reader.readAsText(file, "UTF-8");
-
     } else if (fileName.endsWith(".xlsx")) {
       reader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
@@ -43,27 +44,30 @@ const IngresarAlumno = () => {
           const [nombre, rut, carrera, año] = row;
           return { nombre, rut, carrera, año };
         });
-
         setStudents(loadedStudents);
         setError("");
       };
       reader.onerror = () => setError("Hubo un error al leer el archivo.");
       reader.readAsArrayBuffer(file);
-
     } else {
-      setError("Formato de archivo no soportado. Cargue un archivo CSV o Excel (.xlsx).");
+      setError(
+        "Formato de archivo no soportado. Cargue un archivo CSV o Excel (.xlsx)."
+      );
     }
   };
 
   const confirmSubmission = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/estudiantes/cargaMasiva", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(students),
-      });
+      const response = await fetch(
+        "http://localhost:3001/api/estudiantes/cargaMasiva",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(students),
+        }
+      );
       if (!response.ok) {
         throw new Error("Error en la carga masiva de estudiantes.");
       }
@@ -83,7 +87,9 @@ const IngresarAlumno = () => {
       <div className="bg-white p-8 rounded-lg shadow-lg w-2/3">
         <div className="flex items-start justify-between">
           <div className="col-span-2">
-            <h2 className="font-bold text-xl mb-4">Carga Masiva de Estudiantes</h2>
+            <h2 className="font-bold text-xl mb-4">
+              Carga Masiva de Estudiantes
+            </h2>
             <input
               type="file"
               accept=".csv, .xlsx"
@@ -95,7 +101,9 @@ const IngresarAlumno = () => {
         </div>
 
         <div className="mt-8">
-          <h2 className="font-bold text-xl mb-4">Vista Previa de Estudiantes Cargados</h2>
+          <h2 className="font-bold text-xl mb-4">
+            Vista Previa de Estudiantes Cargados
+          </h2>
           {students.length > 0 ? (
             <table className="min-w-full bg-white">
               <thead>

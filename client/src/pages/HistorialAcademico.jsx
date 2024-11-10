@@ -1,5 +1,6 @@
 import React from "react";
 import TarjetaHistorial from "../components/TarjetaHistorial.jsx";
+import BotonEliminar from "../components/BotonEliminar.jsx";
 
 const HistorialAcademico = ({
   historial,
@@ -71,13 +72,6 @@ const HistorialAcademico = ({
         ) : (
           <p>No hay historial académico disponible</p>
         )}
-      </div>
-
-      {/* Botón de eliminar estudiante en la esquina inferior izquierda de la aplicación */}
-      <div className="fixed bottom-4 left-4">
-        <button className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out">
-          Eliminar Estudiante
-        </button>
       </div>
     </div>
   );

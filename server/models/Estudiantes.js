@@ -16,7 +16,7 @@ export const Estudiante = sequelize.define(
     },
     carreraDestino: {
       type: DataTypes.STRING(50), // varchar(50)
-      allowNull: false, // DEFAULT NULL
+      allowNull: true, // Puede ser nulo
     },
     ano: {
       type: DataTypes.INTEGER, // varchar(50)
