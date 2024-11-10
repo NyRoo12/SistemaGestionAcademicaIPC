@@ -1,4 +1,4 @@
-import {getHistorial_, getEquivalencias_} from "../repository/asignaturasEquivalentes.repository.js";
+import { getHistorial_, getEquivalencias_, getCarreras_, } from "../repository/asignaturasEquivalentes.repository.js";
 
 export async function getEquivalencias(req, res) {
   const { query: rut } = req.query;
@@ -32,3 +32,12 @@ export async function getEquivalencias(req, res) {
     });
   });
 };
+
+export async function getCarreras(req, res) {
+  getCarreras_().then(data => {
+    res.json(data)
+    // res.status(200).json({status : true, data : data})
+  }, error => {
+    res.status(400).json({status : false, error : error.message })
+  })
+}

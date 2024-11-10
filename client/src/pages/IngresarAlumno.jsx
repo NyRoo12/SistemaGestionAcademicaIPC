@@ -15,18 +15,19 @@ function IngresarAlumno() {
   const [step, setStep] = useState(1);
   const [careers, setCareers] = useState([]);
 
+  const fetchCareers = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/asignaturasEquivalentes/carreras`);
+      if (!response.ok) throw new Error("Error en la solicitud");
+      const result = await response.json();
+      console.log(result);
+      setCareers(result);
+    } catch (error) {
+      console.error("Error fetching careers:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchCareers = async () => {
-      try {
-        const response = await fetch(`http://localhost:3001/api/estudiantes`); // Endpoint correcto para carreras
-        if (!response.ok) throw new Error("Error en la solicitud");
-        const result = await response.json();
-        setCareers(result);
-      } catch (error) {
-        console.error("Error fetching careers:", error);
-      }
-    };
     fetchCareers();
   }, []);
 
@@ -142,7 +143,7 @@ function IngresarAlumno() {
                           </option>
                         ))}
                       </select>
-                  </div>
+                </div>
                 <div className="col-span-1">
                   <label className="block font-semibold mb-2">Año de Ingreso:</label>
                   <input
