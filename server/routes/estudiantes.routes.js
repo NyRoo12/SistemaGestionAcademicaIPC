@@ -29,6 +29,7 @@ router.post("/cargaMasiva", cargaMasiva);
 // Ruta para cargar estudiantes de manera masiva
 router.delete("/eliminarEstudiante", eliminarEstudiante);
 
+
 router.post("/cargarCarreraDestino/:rut", cargarCarreraDestino);
 
 export default router;

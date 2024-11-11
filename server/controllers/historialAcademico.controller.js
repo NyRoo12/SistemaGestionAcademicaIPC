@@ -115,3 +115,24 @@ export async function obtenerEstudiantesSinHistorial(req, res) {
   }
 }
 
+export const eliminarHistorial = async (req, res) => {
+  const { rut } = req.params; // Obtener el RUT del parámetro de la URL
+
+  try {
+    // Eliminar todos los registros del historial académico del estudiante con el RUT especificado
+    const result = await HistorialAcademico.destroy({
+      where: {
+        rut_estudiante: rut, // Filtrar por el RUT del estudiante
+      },
+    });
+
+    if (result > 0) { // Si se han eliminado registros
+      return res.status(200).json({ message: "Historial académico eliminado exitosamente." });
+    } else {
+      return res.status(404).json({ message: "No se encontró historial académico para el estudiante con el RUT proporcionado." });
+    }
+  } catch (error) {
+    console.error("Error al eliminar el historial académico:", error);
+    return res.status(500).json({ message: "Hubo un error al eliminar el historial académico." });
+  }
+};
