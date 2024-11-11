@@ -9,7 +9,7 @@ const router = Router();
 
 // Rutas
 router.get("/", obtenerHistorial);
-router.get("/rut/:rut", obtenerHistorialPorRut);
+router.get("/obtenerHistorial/:rut", obtenerHistorialPorRut);
 router.post("/", agregar);
 
 export default router;

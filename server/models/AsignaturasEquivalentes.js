@@ -47,6 +47,7 @@ AsignaturasIPC.hasMany(AsignaturasEquivalentes, {
   sourceKey: 'codigo_IPC',
 });
 
+// Relación en AsignaturasEquivalentes
 AsignaturasEquivalentes.belongsTo(AsignaturasIPC, {
   foreignKey: 'codigo_IPC',
   targetKey: 'codigo_IPC',

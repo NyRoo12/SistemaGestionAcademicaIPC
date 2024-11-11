@@ -1,7 +1,8 @@
-import { HistorialAcademico } from "../models/HistorialAcademico.js"
-import { AsignaturasIPC } from "../models/AsignaturasIPC.js"
-import { AsignaturasEquivalentes } from "../models/AsignaturasEquivalentes.js"
-import { Sequelize } from "sequelize";
+import { Sequelize, Op } from 'sequelize';
+import { AsignaturasIPC } from '../models/AsignaturasIPC.js';
+import { AsignaturasEquivalentes } from '../models/AsignaturasEquivalentes.js';
+import { HistorialAcademico } from '../models/HistorialAcademico.js';
+import { Estudiante } from '../models/Estudiantes.js';
 
 // Obtener el historial académico del estudiante
 export async function getHistorial_(rut){
@@ -23,32 +24,42 @@ export async function getHistorial_(rut){
   }
 };
 
-// Obtener equivalencias de las asignaturas en la carrera de destino
-export async function getEquivalencias_(rut){
+export async function getEquivalencias_(rut) {
   try {
+    // Primero, obtenemos la carrera del estudiante con el rut proporcionado
+    const carreraDestino = await Estudiante.findOne({
+      attributes: ['carreraDestino'],
+      where: { rut: rut }
+    });
+
+    // Luego, obtenemos las asignaturas del historial académico
+    const historial = await HistorialAcademico.findAll({
+      attributes: ['codigo_IPC'],
+      where: { rut_estudiante: rut }
+    });
+
+    // Ahora, buscamos las equivalencias de asignaturas
     const equivalencias = await AsignaturasIPC.findAll({
-      attributes: ['codigo_IPC', 'nombre_IPC'],
       include: [{
         model: AsignaturasEquivalentes,
         attributes: ['codigo_destino', 'nombre', 'carrera'],
         where: {
-          carrera: sequelize.literal(`(SELECT e.carreraDestino FROM estudiante e WHERE e.rut = '${rut}')`)
-        },
-        required: true // Asegura que solo se devuelvan los registros que tienen asignaturas de destino
+          codigo_IPC: { [Op.in]: historial.map((record) => record.codigo_IPC) },
+          carrera: carreraDestino ? carreraDestino.carreraDestino : null
+        }
       }],
       where: {
-        codigo_IPC: {
-          [Op.in]: sequelize.literal(`(SELECT ha.codigo_IPC FROM historialAcademico ha WHERE ha.rut_estudiante = '${rut}')`)
-        }
+        codigo_IPC: { [Op.in]: historial.map((record) => record.codigo_IPC) },
       }
     });
 
     return equivalencias;
   } catch (error) {
     console.error("Error al obtener equivalencias:", error);
-    throw error; // Lanza el error para ser manejado en el controlador
+    throw error;
   }
-};
+}
+
 
 export async function getCarreras_(){
   try {

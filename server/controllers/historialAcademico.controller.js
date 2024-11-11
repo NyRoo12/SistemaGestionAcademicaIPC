@@ -17,8 +17,25 @@ export async function obtenerHistorial(req, res) {
 export async function obtenerHistorialPorRut(req, res) {
   const { rut } = req.params;
   try {
-    const msg = await obtenerPorRut_(rut); // Usa await para simplificar
-    res.status(200).json({ status: true, msg: msg });
+    const registros = await obtenerPorRut_(rut); // Obtén los registros desde el repositorio+
+
+    // Transformación de los datos al formato requerido
+    const formattedData = registros.map((registro) => {
+      return {
+        codigo_IPC: registro.AsignaturasIPC.codigo_IPC,
+        nombre_IPC: registro.AsignaturasIPC.nombre_IPC,
+        nota: registro.nota.toFixed(1), // Aseguramos que sea un string con un decimal
+        semestre: registro.semestre === '1' ? 'Diurno' : 'Vespertino', // Ejemplo de mapeo de régimen
+        Nivel: "1", // Puedes ajustar esto según tus datos
+        ano: registro.ano.toString(),
+        semestre: registro.semestre,
+        Créditos: "10", // Ejemplo de valor fijo o puedes ajustarlo según tus datos
+        HrsPresenciales: "40", // Ejemplo de valor fijo o ajustado
+        estado: parseFloat(registro.nota) >= 4 ? 1 : 0,
+      };
+    });
+
+    res.status(200).json(formattedData); // Enviar solo el arreglo de datos formateado
   } catch (error) {
     res.status(400).json({ status: false, error: error.message });
   }

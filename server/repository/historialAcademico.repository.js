@@ -1,4 +1,5 @@
 import { AsignaturasIPC } from "../models/AsignaturasIPC.js";
+import { HistorialAcademico } from "../models/HistorialAcademico.js";
 
 //-------------------------------------------------------------------------------------------------------
 
