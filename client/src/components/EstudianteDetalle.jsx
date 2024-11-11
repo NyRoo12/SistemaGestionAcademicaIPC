@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import DetallesEstudiante from "./DetallesEstudiante.jsx";
 import BotonEquivalencias from "./BotonEquivalencias.jsx";
 import HistorialAcademico from "../pages/HistorialAcademico.jsx";
-import BotonEliminar from "./BotonEliminar.jsx";
 
 const EstudianteDetalle = () => {
   const { rut } = useParams();
@@ -16,9 +15,7 @@ const EstudianteDetalle = () => {
     const fetchEstudiante = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/estudiantes/obtenerDetalle?query=${encodeURIComponent(
-            rut
-          )}`
+          `http://localhost:3001/api/estudiantes/obtenerDetalle?query=${encodeURIComponent(rut)}`
         );
         if (!response.ok) {
           throw new Error("Error al obtener el estudiante");
@@ -37,14 +34,13 @@ const EstudianteDetalle = () => {
     const fetchHistorial = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/historialAcademico/obtenerHistorial?query=${encodeURIComponent(
-            rut
-          )}`
+          `http://localhost:3001/api/historialAcademico/obtenerHistorial/${encodeURIComponent(rut)}`
         );
         if (!response.ok) {
           throw new Error("Error al obtener el historial");
         }
         const result = await response.json();
+        console.log(result)
         setHistorial(result);
       } catch (error) {
         console.error("Error fetching academic history:", error);
@@ -59,14 +55,13 @@ const EstudianteDetalle = () => {
       const fetchEquivalencias = async () => {
         try {
           const response = await fetch(
-            `http://localhost:3001/api/equivalencias/obtenerEquivalencias?query=${encodeURIComponent(
-              rut
-            )}`
+            `http://localhost:3001/api/asignaturasEquivalentes/obtenerEquivalencias?query=${encodeURIComponent(rut)}`
           );
           if (!response.ok) {
             throw new Error("Error al obtener las equivalencias");
           }
           const result = await response.json();
+          console.log(result)
           setEquivalencias(result);
         } catch (error) {
           console.error("No se pudo obtener las equivalencias", error);
@@ -86,25 +81,20 @@ const EstudianteDetalle = () => {
   return (
     <div className="min-h-screen p-8 bg-gray-100 flex flex-col">
       <div className="flex mb-4">
-        <div className="w-1/3 pr-4">
-          {" "}
-          {/* Información del estudiante a la izquierda */}
+        <div className="w-1/3 pr-4"> {/* Información del estudiante a la izquierda */}
           <DetallesEstudiante estudiante={estudiante} />
           <BotonEquivalencias
             mostrarEquivalencias={mostrarEquivalencias}
             onClick={handleClick}
           />
         </div>
-        <div className="w-2/3">
-          {" "}
-          {/* Historial académico a la derecha */}
+        <div className="w-2/3"> {/* Historial académico a la derecha */}
           <HistorialAcademico
             historial={historial}
             equivalencias={equivalencias}
             mostrarEquivalencias={mostrarEquivalencias}
           />
         </div>
-        <BotonEliminar rut={rut} />
       </div>
     </div>
   );
