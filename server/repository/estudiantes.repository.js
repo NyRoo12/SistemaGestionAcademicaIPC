@@ -106,3 +106,22 @@ export async function getDetalle_(rut) {
     throw new Error("Error al obtener el detalle del estudiante");
   }
 }
+
+
+export async function cargaCarreraDestino_(rut) {
+  try {
+    const estudiante = await Estudiante.findOne({
+      where: { rut: rut },
+      attributes: ["carreraDestino"], // Solo selecciona la carreraDestino
+    });
+
+    if (!estudiante) {
+      throw new Error("Estudiante no encontrado");
+    }
+
+    return estudiante.carreraDestino;
+  } catch (error) {
+    console.error("Error al obtener la carrera de destino:", error);
+    throw new Error("Error al obtener la carrera de destino");
+  }
+}

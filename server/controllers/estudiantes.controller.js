@@ -5,7 +5,10 @@ import {
   getDetalle_,
   cargaMasiva_,
   eliminarEstudiante_,
+  cargaCarreraDestino_,
 } from "../repository/estudiantes.repository.js";
+
+import { Estudiante } from "../models/Estudiantes.js";
 
 export async function getEstudiantes(req, res) {
   getEstudiantes_().then(
@@ -114,3 +117,29 @@ export async function getDetalle(req, res) {
     }
   );
 }
+
+// Definir la función cargarCarreraDestino
+export const cargarCarreraDestino = async (req, res) => {
+  const { rut } = req.params;
+  const { carreraDestino } = req.body;
+
+  try {
+    const estudiante = await Estudiante.findOne({ where: { rut } });
+
+    if (!estudiante) {
+      return res.status(404).json({ message: "Estudiante no encontrado" });
+    }
+
+    estudiante.carreraDestino = carreraDestino;
+    await estudiante.save();
+
+    res.status(200).json({ message: "Carrera destino actualizada correctamente" });
+  } catch (error) {
+    console.error("Error al actualizar la carrera destino:", error); // Mostrar el error completo
+    res.status(500).json({
+      message: "Hubo un error al actualizar la carrera destino",
+      error: error.message,  // Añadir el mensaje de error
+      stack: error.stack,    // Mostrar el stack trace
+    });
+  }
+};

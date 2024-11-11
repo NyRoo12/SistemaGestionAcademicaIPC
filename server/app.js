@@ -29,6 +29,6 @@ app.use("/api/estudiantes", estudiantesRoutes);
 app.use("/api/asignaturasIPC", asignaturasIPCRoutes);
 app.use("/api/historialAcademico", historialAcademicoRoutes);
 app.use("/api/asignaturasEquivalentes", asignaturasEquivalentesRoutes);
-app.use("/api/login", userRoutes); // Usa loginRoutes en lugar de login
+app.use("/api/login", userRoutes);
 
 export default app;

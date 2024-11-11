@@ -13,7 +13,6 @@ export async function obtenerTodo_() {
   }
 }
 
-// Función para agregar un nuevo registro al historial académico
 export async function agregar_({
   rut_estudiante,
   codigo_IPC,
@@ -23,6 +22,18 @@ export async function agregar_({
   estado,
 }) {
   try {
+    const estudiante = await Estudiante.findOne({ where: { rut: rut_estudiante } });
+    if (!estudiante) {
+      throw new Error("Estudiante no encontrado");
+    }
+
+    // Verificar si la asignatura IPC existe
+    const asignatura = await AsignaturasIPC.findOne({ where: { codigo_IPC } });
+    if (!asignatura) {
+      throw new Error("Asignatura IPC no encontrada");
+    }
+
+    // Crear el nuevo registro de historial académico
     const nuevoRegistro = await HistorialAcademico.create({
       rut_estudiante,
       codigo_IPC,
@@ -31,6 +42,7 @@ export async function agregar_({
       semestre,
       estado,
     });
+
     return nuevoRegistro;
   } catch (error) {
     throw new Error("Error al agregar el registro: " + error.message);
