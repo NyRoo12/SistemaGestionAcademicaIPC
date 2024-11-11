@@ -61,8 +61,17 @@ const EstudianteDetalle = () => {
             throw new Error("Error al obtener las equivalencias");
           }
           const result = await response.json();
-          console.log(result)
-          setEquivalencias(result);
+          const transformedResult = result.flatMap(asignatura => 
+            asignatura.AsignaturasEquivalentes.map(eq => ({
+              codigo_IPC: asignatura.codigo_IPC,
+              nombre_IPC: asignatura.nombre_IPC,
+              codigo_destino: eq.codigo_destino,
+              nombre: eq.nombre,
+              carrera: eq.carrera
+            }))
+          );
+          console.log(transformedResult);
+          setEquivalencias(transformedResult);
         } catch (error) {
           console.error("No se pudo obtener las equivalencias", error);
         }
