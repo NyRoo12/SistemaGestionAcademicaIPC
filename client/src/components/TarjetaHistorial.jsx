@@ -26,10 +26,10 @@ const TarjetaHistorial = ({
 
   return (
     <div
-      className={`p-4 m-2 rounded-lg text-white ${tarjetaClase} shadow-lg transition-transform transform hover:scale-105`}
+      className={`p-2 m-2 rounded-lg text-white ${tarjetaClase} shadow-lg`} // Eliminé hover:scale-105
       style={{ width: "1000px" }}
     >
-      <div className="flex justify-between text-lg">
+      <div className="flex justify-between text-sm">
         <div className="w-1/5 p-1">
           <p>{codigoIPC}</p>
         </div>

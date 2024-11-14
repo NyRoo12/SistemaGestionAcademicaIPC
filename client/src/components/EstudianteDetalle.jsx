@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import DetallesEstudiante from "./DetallesEstudiante.jsx";
 import BotonEquivalencias from "./BotonEquivalencias.jsx";
 import HistorialAcademico from "../pages/HistorialAcademico.jsx";
+import BotonEliminar from "./BotonEliminar.jsx";
 
 const EstudianteDetalle = () => {
   const { rut } = useParams();
@@ -36,7 +37,7 @@ const EstudianteDetalle = () => {
     const fetchHistorial = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/historialAcademico/obtenerHistorial?query=${encodeURIComponent(
+          `http://localhost:3001/api/historialAcademico/obtenerHistorial/${encodeURIComponent(
             rut
           )}`
         );
@@ -58,15 +59,23 @@ const EstudianteDetalle = () => {
       const fetchEquivalencias = async () => {
         try {
           const response = await fetch(
-            `http://localhost:3001/api/equivalencias/obtenerEquivalencias?query=${encodeURIComponent(
-              rut
-            )}`
+            `http://localhost:3001/api/asignaturasEquivalentes/obtenerEquivalencias?query=${encodeURIComponent(rut)}`
           );
           if (!response.ok) {
             throw new Error("Error al obtener las equivalencias");
           }
           const result = await response.json();
-          setEquivalencias(result);
+          const transformedResult = result.flatMap(asignatura => 
+            asignatura.AsignaturasEquivalentes.map(eq => ({
+              codigo_IPC: asignatura.codigo_IPC,
+              nombre_IPC: asignatura.nombre_IPC,
+              codigo_destino: eq.codigo_destino,
+              nombre: eq.nombre,
+              carrera: eq.carrera
+            }))
+          );
+          console.log(transformedResult);
+          setEquivalencias(transformedResult);
         } catch (error) {
           console.error("No se pudo obtener las equivalencias", error);
         }
@@ -83,17 +92,28 @@ const EstudianteDetalle = () => {
   };
 
   return (
-    <div className="min-h-screen p-8 bg-gray-100">
-      <DetallesEstudiante estudiante={estudiante} />
-      <BotonEquivalencias
-        mostrarEquivalencias={mostrarEquivalencias}
-        onClick={handleClick}
-      />
-      <HistorialAcademico
-        historial={historial}
-        equivalencias={equivalencias}
-        mostrarEquivalencias={mostrarEquivalencias}
-      />
+    <div className="min-h-screen p-8 bg-gray-100 flex flex-col">
+      <div className="flex mb-4">
+        <div className="w-1/3 pr-4">
+          {" "}
+          {/* Información del estudiante a la izquierda */}
+          <DetallesEstudiante estudiante={estudiante} />
+          <BotonEquivalencias
+            mostrarEquivalencias={mostrarEquivalencias}
+            onClick={handleClick}
+          />
+        </div>
+        <div className="w-2/3">
+          {" "}
+          {/* Historial académico a la derecha */}
+          <HistorialAcademico
+            historial={historial}
+            equivalencias={equivalencias}
+            mostrarEquivalencias={mostrarEquivalencias}
+          />
+        </div>
+        <BotonEliminar rut={rut} />
+      </div>
     </div>
   );
 };

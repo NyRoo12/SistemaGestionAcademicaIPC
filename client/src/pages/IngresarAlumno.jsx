@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDropzone } from 'react-dropzone';
 import * as XLSX from 'xlsx';
 
@@ -13,8 +13,102 @@ function IngresarAlumno() {
   const [data, setData] = useState([]);
   const [fileName, setFileName] = useState("");
   const [step, setStep] = useState(1);
+  const [careers, setCareers] = useState([]);
+  const [studentsWithoutHistory, setStudentsWithoutHistory] = useState([]);
+
+
+  const fetchCareers = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/asignaturasEquivalentes/carreras`);
+      if (!response.ok) throw new Error("Error en la solicitud");
+      const result = await response.json();
+      console.log(result);
+      setCareers(result);
+    } catch (error) {
+      console.error("Error fetching careers:", error);
+    }
+  };
+
+  const fetchStudentsWithoutHistory = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/api/historialAcademico/estudiantesSinHistorial");
+      if (!response.ok) throw new Error("Error al obtener alumnos sin historial");
+      const result = await response.json();
+      setStudentsWithoutHistory(result.data);
+      console.log(result.data);
+    } catch (error) {
+      console.error("Error fetching students without history:", error);
+    }
+  };
+
+  const enviarHistorialAcademico = async (rut, historialAcademico) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/historialAcademico/agregarHistorial/${rut}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(historialAcademico)
+      });
+
+      console.log(JSON.stringify(historialAcademico));
+  
+      if (!response.ok) {
+        throw new Error('Error al enviar el historial académico');
+      }
+  
+      alert('Historial académico enviado exitosamente');
+    } catch (error) {
+      console.error('Error al enviar historial académico:', error);
+      alert('Hubo un error al enviar el historial académico');
+    }
+  };
+
+  const enviarAsignaturasDestino = async (rut, asignaturasDestino) => {
+    try {
+      // Crear el objeto con la propiedad carreraDestino
+      const data = {
+        carreraDestino: asignaturasDestino // Asignar el valor que corresponde aquí
+      };
+
+      console.log(data);
+  
+      const response = await fetch(`http://localhost:3001/api/estudiantes/cargarCarreraDestino/${rut}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data), // Enviar el objeto con carreraDestino
+      });
+
+  
+      if (!response.ok) {
+        throw new Error('Error al enviar las asignaturas de destino');
+      }
+
+    } catch (error) {
+      console.error('Error al enviar carrera de destino:', error);
+      alert('Hubo un error al enviar la carrera de destino');
+    }
+  };
+  
+  
+
+  useEffect(() => {
+    fetchCareers();
+    fetchStudentsWithoutHistory();
+  }, []);
+
+  // Función para formatear el RUT
+  const formatRUT = (value) => {
+    if (!value) return ""; // Devuelve cadena vacía si el valor está vacío
+    return value.replace(/^(\d{1,2})(\d{3})(\d{3})(\d{1})$/, "$1.$2.$3-$4");
+  };
 
   const handleInputChange = (field, value) => {
+    if (field === "rut") {
+      value = value;
+    }
     setStudent({ ...student, [field]: value });
   };
 
@@ -75,6 +169,32 @@ function IngresarAlumno() {
     setStep(1);
   };
 
+  const handleVerifyStudent = () => {
+    const studentFound = studentsWithoutHistory.find(
+      (studentWithoutHistory) => studentWithoutHistory.rut === student.rut
+    );
+
+    if (studentFound) {
+      setStudent({
+        ...student,
+        nombre: studentFound.nombre,
+        año: studentFound.ano,
+      });
+    } else {
+      alert("El estudiante no se encuentra en la lista de alumnos sin historial.");
+    }
+  };
+
+  const handleConfirmar = () => {
+    if (student.rut && data) {
+      enviarAsignaturasDestino(student.rut, student.carrera);
+      enviarHistorialAcademico(student.rut, data);
+    } else {
+      alert('Por favor selecciona un estudiante y asegúrate de que el historial académico esté disponible');
+    }
+  };
+
+
   return (
     <div className="p-8 bg-gray-100 h-screen flex justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg w-2/3 overflow-y-auto">
@@ -82,6 +202,24 @@ function IngresarAlumno() {
           <>
             <div className="flex items-start justify-between">
               <div className="grid grid-cols-2 gap-4 flex-grow">
+                <div className="col-span-2">
+                  <label className="block font-semibold mb-2">Rut:</label>
+                  <div className="flex items-center">
+                    <input
+                      type="text"
+                      value={student.rut}
+                      onChange={(e) => handleInputChange("rut", e.target.value)}
+                      className="w-full px-3 py-2 border rounded"
+                      placeholder="Ejemplo: 12365478-9"
+                    />
+                    <button
+                      onClick={handleVerifyStudent}
+                      className="ml-4 bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-700"
+                    >
+                      Verificar
+                    </button>
+                  </div>
+                </div>
                 <div className="col-span-2">
                   <label className="block font-semibold mb-2">Nombre:</label>
                   <input
@@ -91,23 +229,20 @@ function IngresarAlumno() {
                     className="w-full px-3 py-2 border rounded"
                   />
                 </div>
-                <div className="col-span-2">
-                  <label className="block font-semibold mb-2">Rut:</label>
-                  <input
-                    type="text"
-                    value={student.rut}
-                    onChange={(e) => handleInputChange("rut", e.target.value)}
-                    className="w-full px-3 py-2 border rounded"
-                  />
-                </div>
                 <div className="col-span-1">
                   <label className="block font-semibold mb-2">Carrera Destino:</label>
-                  <input
-                    type="text"
+                  <select
                     value={student.carrera}
                     onChange={(e) => handleInputChange("carrera", e.target.value)}
                     className="w-full px-3 py-2 border rounded"
-                  />
+                  >
+                    <option value="">Selecciona una carrera</option>
+                    {careers.map((career, index) => (
+                      <option key={index} value={career.carrera}>
+                        {career.carrera}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="col-span-1">
                   <label className="block font-semibold mb-2">Año de Ingreso:</label>
@@ -144,13 +279,6 @@ function IngresarAlumno() {
                   </button>
                 </div>
               )}
-              {/*}
-              {data.length > 0 && (
-                <div className="mt-4">
-                  <h3>Datos del archivo Excel cargados:</h3>
-                  <pre>{JSON.stringify(data, null, 2)}</pre>
-                </div>
-              )}*/}
             </div>
 
             <button
@@ -221,7 +349,6 @@ function IngresarAlumno() {
               </table>
             </div>
 
-             {/* Botones Volver y Confirmar fuera del recuadro del historial académico */}
              <div className="flex justify-end mt-4 space-x-2">
               <button
                 onClick={handleBack}
@@ -230,8 +357,8 @@ function IngresarAlumno() {
                 Volver
               </button>
               <button
-                onClick={() => alert("Datos confirmados y enviados")}
                 className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
+                onClick={handleConfirmar}
               >
                 Confirmar
               </button>
