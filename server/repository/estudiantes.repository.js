@@ -39,16 +39,23 @@ export async function eliminarEstudiante_(rut) {
 export async function createEstudiante_(estudiante) {
   const { rut, nombre, ano, carreraDestino } = estudiante;
   try {
-    const nuevoEstudiante = await Estudiante.create({
+    const [nuevoEstudiante, creado] = await Estudiante.upsert({
+      rut, // Clave primaria
       nombre,
-      rut,
-      carreraDestino,
       ano,
+      carreraDestino,
     });
+
+    if (creado) {
+      console.log("Estudiante creado:", nuevoEstudiante);
+    } else {
+      console.log("Estudiante actualizado:", nuevoEstudiante);
+    }
+
     return nuevoEstudiante;
   } catch (error) {
-    console.error("Error al crear el estudiante:", error);
-    throw new Error("Error al crear el estudiante");
+    console.error("Error al crear o actualizar el estudiante:", error);
+    throw new Error("Error al crear o actualizar el estudiante");
   }
 }
 
@@ -106,7 +113,6 @@ export async function getDetalle_(rut) {
     throw new Error("Error al obtener el detalle del estudiante");
   }
 }
-
 
 export async function cargaCarreraDestino_(rut) {
   try {

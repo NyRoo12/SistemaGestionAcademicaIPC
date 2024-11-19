@@ -4,9 +4,11 @@ import * as XLSX from "xlsx";
 
 const IngresarListado = () => {
   const [students, setStudents] = useState([]);
-  const [error, setError] = useState("");
+  const [errorModal, setErrorModal] = useState({ open: false, message: "" });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate(); // Hook de navegación
+
+  const requiredColumns = ["R.U.N.", "Nombre", "Ingreso"];
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -15,23 +17,23 @@ const IngresarListado = () => {
     const fileName = file.name;
     const reader = new FileReader();
 
-    if (fileName.endsWith(".csv")) {
-      reader.onload = (e) => {
-        const fileContent = e.target.result;
-        const lines = fileContent.split("\n");
-
-        const loadedStudents = lines.map((line) => {
-          const [rut, nombre, ano] = line.split(",");
-          return { rut, nombre, ano };
+    const validateColumns = (columns) => {
+      const missingColumns = requiredColumns.filter(
+        (col) => !columns.includes(col)
+      );
+      if (missingColumns.length > 0) {
+        setErrorModal({
+          open: true,
+          message: `El archivo cargado no tiene las columnas necesarias: ${missingColumns.join(
+            ", "
+          )}`,
         });
+        return false;
+      }
+      return true;
+    };
 
-        setStudents(loadedStudents);
-        console.log(loadedStudents);
-        setError("");
-      };
-      reader.onerror = () => setError("Hubo un error al leer el archivo.");
-      reader.readAsText(file, "UTF-8");
-    } else if (fileName.endsWith(".xlsx")) {
+    if (fileName.endsWith(".xlsx")) {
       reader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: "array" });
@@ -39,21 +41,38 @@ const IngresarListado = () => {
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-        const loadedStudents = jsonData.slice(1).map((row) => {
-          const [rut, nombre, ano] = row;
-          return { rut, nombre, ano };
+        const [headerRow, ...dataRows] = jsonData;
+
+        if (!validateColumns(headerRow)) return;
+
+        // Mapear las columnas a sus respectivos índices en el encabezado
+        const columnIndexes = {
+          rut: headerRow.indexOf("R.U.N."),
+          nombre: headerRow.indexOf("Nombre"),
+          ano: headerRow.indexOf("Ingreso"),
+        };
+
+        // Asignar los datos correctamente según las columnas
+        const loadedStudents = dataRows.map((row) => {
+          return {
+            rut: row[columnIndexes.rut],
+            nombre: row[columnIndexes.nombre],
+            ano: row[columnIndexes.ano],
+          };
         });
 
-        setStudents(loadedStudents);
         console.log(loadedStudents);
-        setError("");
+        setStudents(loadedStudents);
       };
-      reader.onerror = () => setError("Hubo un error al leer el archivo.");
+      reader.onerror = () =>
+        setErrorModal({ open: true, message: "Error al leer el archivo." });
       reader.readAsArrayBuffer(file);
     } else {
-      setError(
-        "Formato de archivo no soportado. Cargue un archivo CSV o Excel (.xlsx)."
-      );
+      setErrorModal({
+        open: true,
+        message:
+          "Formato de archivo no soportado. Cargue un archivo Excel (.xlsx).",
+      });
     }
   };
 
@@ -86,51 +105,42 @@ const IngresarListado = () => {
   return (
     <div className="p-8 bg-gray-100 h-screen flex justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg w-2/3">
-        <div className="flex items-start justify-between">
-          <div className="col-span-2">
-            <h2 className="font-bold text-xl mb-4">
-              Carga Masiva de Estudiantes
-            </h2>
-            <input
-              type="file"
-              accept=".csv, .xlsx"
-              onChange={handleFileUpload}
-              className="w-full px-3 py-2 border rounded"
-            />
-            {error && <p className="text-red-600 mt-2">{error}</p>}
-          </div>
-        </div>
+        <h2 className="font-bold text-xl mb-4">Carga Masiva de Estudiantes</h2>
+        <input
+          type="file"
+          accept=".xlsx"
+          onChange={handleFileUpload}
+          className="w-full px-3 py-2 border rounded"
+        />
 
         <div className="mt-8">
-          <h2 className="font-bold text-xl mb-4">
-            Vista Previa de Estudiantes Cargados
-          </h2>
-          <div className="max-h-64 overflow-y-auto">
-            {" "}
-            {/* Contenedor con desplazamiento vertical */}
-            {students.length > 0 ? (
+          <h2 className="font-bold text-xl mb-4">Vista Previa</h2>
+          {students.length > 0 ? (
+            <div className="max-h-96 overflow-y-auto">
+              {" "}
+              {/* Barra de desplazamiento */}
               <table className="min-w-full bg-white">
                 <thead>
                   <tr>
+                    <th className="py-2">R.U.N.</th>
                     <th className="py-2">Nombre</th>
-                    <th className="py-2">RUT</th>
-                    <th className="py-2">Año</th>
+                    <th className="py-2">Año de ingreso</th>
                   </tr>
                 </thead>
                 <tbody>
                   {students.map((student, index) => (
                     <tr key={index}>
-                      <td className="border px-4 py-2">{student.nombre}</td>
                       <td className="border px-4 py-2">{student.rut}</td>
+                      <td className="border px-4 py-2">{student.nombre}</td>
                       <td className="border px-4 py-2">{student.ano}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            ) : (
-              <p className="text-gray-600">No hay estudiantes cargados aún.</p>
-            )}
-          </div>
+            </div>
+          ) : (
+            <p className="text-gray-600">No hay estudiantes cargados aún.</p>
+          )}
         </div>
 
         <div className="flex justify-end mt-8">
@@ -161,6 +171,23 @@ const IngresarListado = () => {
                   onClick={() => setIsModalOpen(false)}
                 >
                   Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {errorModal.open && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+              <h2 className="font-bold text-xl mb-4">Error</h2>
+              <p>{errorModal.message}</p>
+              <div className="flex mt-4 justify-end">
+                <button
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+                  onClick={() => setErrorModal({ open: false, message: "" })}
+                >
+                  Cerrar
                 </button>
               </div>
             </div>
