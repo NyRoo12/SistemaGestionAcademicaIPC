@@ -55,11 +55,11 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 py-8">
-      <h1 className="text-3xl font-bold mb-4">
+    <div className="flex flex-col items-center justify-start h-screen bg-gray-100 py-8 overflow-hidden">
+      <h1 className="text-3xl font-bold mb-4 mt-16">
         <img src={ipc} className="w-40 h-auto" alt="Logo IPC" />
       </h1>
-      <form onSubmit={handleSearch} className="w-full max-w-md mb-4">
+      <form onSubmit={handleSearch} className="w-full max-w-md mb-4 mt-4">
         <div className="relative flex items-center w-full">
           <input
             type="text"
@@ -90,7 +90,7 @@ const SearchBar = () => {
         </div>
       </form>
 
-      <div className="w-full max-w-md overflow-y-auto max-h-60"> {/* Ajuste aquí */}
+      <div className="w-full max-w-md flex-grow overflow-y-auto min-h-auto max-h-[70vh] border-4 border-dashed border-blue-500"> {/* Ajuste aquí */}
         {searchPerformed && filteredData.length === 0 ? (
           <div className="text-center my-4">
             <span className="text-lg text-gray-600">Sin Resultados</span>

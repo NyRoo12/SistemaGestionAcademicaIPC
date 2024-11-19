@@ -18,8 +18,6 @@ export default function App() {
   };
 
   useEffect(() => {
-    // Desactiva el scroll en el <body>
-    document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "auto"; // Restablece el scroll al desmontar
     };
@@ -32,7 +30,7 @@ export default function App() {
           <header>
             <NavBar />
           </header>
-          <div className="App h-screen overflow-hidden">
+          <div className="App flex flex-col min-h-screen">
             <main>
               <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
