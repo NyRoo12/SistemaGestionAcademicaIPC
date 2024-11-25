@@ -16,11 +16,12 @@ const IngresarListado = () => {
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
+  
     setFileName(file.name); // Guarda el nombre del archivo seleccionado
-
+    event.target.blur(); // Libera el enfoque del input de archivo
+    document.body.focus();
+    
     const reader = new FileReader();
-
     const validateColumns = (columns) => {
       const missingColumns = requiredColumns.filter(
         (col) => !columns.includes(col)
