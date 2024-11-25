@@ -1,37 +1,44 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileAlt } from "@fortawesome/free-solid-svg-icons"; // Ícono referencial
 
 const IngresarListado = () => {
   const [students, setStudents] = useState([]);
-  const [error, setError] = useState("");
+  const [errorModal, setErrorModal] = useState({ open: false, message: "" });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate(); // Hook de navegación
+  const [fileName, setFileName] = useState(""); // Estado para el nombre del archivo cargado
+  const navigate = useNavigate();
+
+  const requiredColumns = ["R.U.N.", "Nombre", "Ingreso"];
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
-    const fileName = file.name;
+  
+    setFileName(file.name); // Guarda el nombre del archivo seleccionado
+    event.target.blur(); // Libera el enfoque del input de archivo
+    document.body.focus();
+    
     const reader = new FileReader();
-
-    if (fileName.endsWith(".csv")) {
-      reader.onload = (e) => {
-        const fileContent = e.target.result;
-        const lines = fileContent.split("\n");
-
-        const loadedStudents = lines.map((line) => {
-          const [rut, nombre, ano] = line.split(",");
-          return { rut, nombre, ano };
+    const validateColumns = (columns) => {
+      const missingColumns = requiredColumns.filter(
+        (col) => !columns.includes(col)
+      );
+      if (missingColumns.length > 0) {
+        setErrorModal({
+          open: true,
+          message: `El archivo cargado no tiene las columnas necesarias: ${missingColumns.join(
+            ", "
+          )}`,
         });
+        return false;
+      }
+      return true;
+    };
 
-        setStudents(loadedStudents);
-        console.log(loadedStudents);
-        setError("");
-      };
-      reader.onerror = () => setError("Hubo un error al leer el archivo.");
-      reader.readAsText(file, "UTF-8");
-    } else if (fileName.endsWith(".xlsx")) {
+    if (file.name.endsWith(".xlsx")) {
       reader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: "array" });
@@ -39,21 +46,35 @@ const IngresarListado = () => {
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-        const loadedStudents = jsonData.slice(1).map((row) => {
-          const [rut, nombre, ano] = row;
-          return { rut, nombre, ano };
+        const [headerRow, ...dataRows] = jsonData;
+
+        if (!validateColumns(headerRow)) return;
+
+        const columnIndexes = {
+          rut: headerRow.indexOf("R.U.N."),
+          nombre: headerRow.indexOf("Nombre"),
+          ano: headerRow.indexOf("Ingreso"),
+        };
+
+        const loadedStudents = dataRows.map((row) => {
+          return {
+            rut: row[columnIndexes.rut],
+            nombre: row[columnIndexes.nombre],
+            ano: row[columnIndexes.ano],
+          };
         });
 
         setStudents(loadedStudents);
-        console.log(loadedStudents);
-        setError("");
       };
-      reader.onerror = () => setError("Hubo un error al leer el archivo.");
+      reader.onerror = () =>
+        setErrorModal({ open: true, message: "Error al leer el archivo." });
       reader.readAsArrayBuffer(file);
     } else {
-      setError(
-        "Formato de archivo no soportado. Cargue un archivo CSV o Excel (.xlsx)."
-      );
+      setErrorModal({
+        open: true,
+        message:
+          "Formato de archivo no soportado. Cargue un archivo Excel (.xlsx).",
+      });
     }
   };
 
@@ -76,7 +97,6 @@ const IngresarListado = () => {
       setStudents([]);
       setIsModalOpen(false);
 
-      // Navega a "/botones-a" después de la confirmación exitosa
       navigate("/botones-a");
     } catch (error) {
       console.error("Error en la carga masiva:", error);
@@ -87,50 +107,61 @@ const IngresarListado = () => {
     <div className="p-8 bg-gray-100 h-screen flex justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg w-2/3">
         <div className="flex items-start justify-between">
-          <div className="col-span-2">
+          <div className="col-span-2 mb-4">
             <h2 className="font-bold text-xl mb-4">
               Carga Masiva de Estudiantes
             </h2>
-            <input
-              type="file"
-              accept=".csv, .xlsx"
-              onChange={handleFileUpload}
-              className="w-full px-3 py-2 border rounded"
-            />
-            {error && <p className="text-red-600 mt-2">{error}</p>}
+            {/* Selector estilizado */}
+            <label className="flex items-center border border-gray-300 rounded-md px-4 py-2 cursor-pointer hover:bg-gray-100">
+              {fileName && (
+                <FontAwesomeIcon
+                  icon={faFileAlt}
+                  size="2x"
+                  className="text-green-500 mr-2"
+                />
+              )}
+              <span className="flex-1 truncate">
+                {fileName || "Seleccionar archivo"}
+              </span>
+              <input
+                type="file"
+                accept=".csv, .xlsx"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+            </label>
+            {errorModal.open && (
+              <p className="text-red-600 mt-2">{errorModal.message}</p>
+            )}
           </div>
         </div>
 
         <div className="mt-8">
-          <h2 className="font-bold text-xl mb-4">
-            Vista Previa de Estudiantes Cargados
-          </h2>
-          <div className="max-h-64 overflow-y-auto">
-            {" "}
-            {/* Contenedor con desplazamiento vertical */}
-            {students.length > 0 ? (
+          <h2 className="font-bold text-xl mb-4">Vista Previa</h2>
+          {students.length > 0 ? (
+            <div className="max-h-96 overflow-y-auto">
               <table className="min-w-full bg-white">
                 <thead>
                   <tr>
+                    <th className="py-2">R.U.N.</th>
                     <th className="py-2">Nombre</th>
-                    <th className="py-2">RUT</th>
-                    <th className="py-2">Año</th>
+                    <th className="py-2">Año de ingreso</th>
                   </tr>
                 </thead>
                 <tbody>
                   {students.map((student, index) => (
                     <tr key={index}>
-                      <td className="border px-4 py-2">{student.nombre}</td>
                       <td className="border px-4 py-2">{student.rut}</td>
+                      <td className="border px-4 py-2">{student.nombre}</td>
                       <td className="border px-4 py-2">{student.ano}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            ) : (
-              <p className="text-gray-600">No hay estudiantes cargados aún.</p>
-            )}
-          </div>
+            </div>
+          ) : (
+            <p className="text-gray-600">No hay estudiantes cargados aún.</p>
+          )}
         </div>
 
         <div className="flex justify-end mt-8">
@@ -143,7 +174,6 @@ const IngresarListado = () => {
           </button>
         </div>
 
-        {/* Modal de Confirmación */}
         {isModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
