@@ -1,3 +1,5 @@
+//estudiantes.repository.js
+
 import { Estudiante } from "../models/Estudiantes.js";
 import { Op } from "sequelize";
 
@@ -123,5 +125,32 @@ export async function cargaCarreraDestino_(rut) {
   } catch (error) {
     console.error("Error al obtener la carrera de destino:", error);
     throw new Error("Error al obtener la carrera de destino");
+  }
+}
+
+export async function eliminarCarreraDestino_(rut) {
+  try {
+    // Buscar al estudiante por su RUT
+    const estudiante = await Estudiante.findOne({
+      where: { rut: rut },
+    });
+
+    if (!estudiante) {
+      throw new Error("Estudiante no encontrado");
+    }
+
+    // Actualizar el campo 'carreraDestino' del estudiante a null
+    const result = await Estudiante.update(
+      { carreraDestino: null }, // Establecer 'carreraDestino' como null
+      { where: { rut } }
+    );
+
+    if (result[0] > 0) {
+      return { message: "Carrera destino eliminada exitosamente" };
+    } else {
+      throw new Error("No se encontró la carrera destino para el estudiante con el RUT proporcionado");
+    }
+  } catch (error) {
+    throw new Error("Error al eliminar la carrera destino: " + error.message);
   }
 }

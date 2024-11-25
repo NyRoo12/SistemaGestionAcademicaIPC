@@ -8,6 +8,7 @@ const SearchBar = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false); // Nueva bandera
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
