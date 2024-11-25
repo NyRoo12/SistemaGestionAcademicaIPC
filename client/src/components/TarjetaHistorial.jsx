@@ -26,8 +26,8 @@ const TarjetaHistorial = ({
 
   return (
     <div
-      className={`p-2 m-2 rounded-lg text-white ${tarjetaClase} shadow-lg`} // Eliminé hover:scale-105
-      style={{ width: "1000px" }}
+      className={`p-2 m-2 rounded-lg text-white ${tarjetaClase} shadow-lg `} 
+      style={{ width: "3000px" }}
     >
       <div className="flex justify-between text-sm">
         <div className="w-1/5 p-1">

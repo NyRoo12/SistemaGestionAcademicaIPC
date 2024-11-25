@@ -90,7 +90,7 @@ const SearchBar = () => {
         </div>
       </form>
 
-      <div className="w-full max-w-md flex-grow overflow-y-auto min-h-auto max-h-[70vh] border-4 border-dashed border-blue-500"> {/* Ajuste aquí */}
+      <div className="w-full max-w-md flex-grow overflow-y-auto min-h-auto max-h-[70vh] "> {/* Ajuste aquí */}
         {searchPerformed && filteredData.length === 0 ? (
           <div className="text-center my-4">
             <span className="text-lg text-gray-600">Sin Resultados</span>

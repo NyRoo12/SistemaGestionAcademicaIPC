@@ -5,7 +5,7 @@ import SearchBar from "./components/SearchBar.jsx";
 import Login from "./pages/login.jsx";
 
 import IngresarAlumno from "./pages/IngresarAlumno.jsx";
-import EstudianteDetalle from "./components/EstudianteDetalle.jsx";
+import HistorialAcademico from "./pages/HistorialAcademico.jsx";
 import BotonesAlumnos from "./pages/botonesAlumnos.jsx";
 import IngresarListado from "./pages/IngresarListado.jsx";
 import BotonesCertificados from "./pages/botonesCertificados.jsx";
@@ -50,7 +50,7 @@ export default function App() {
                   {/* Ingreso manual */}
                   <Route
                     path="/estudiante/:rut"
-                    element={<EstudianteDetalle />}
+                    element={<HistorialAcademico />}
                   />
                 </Routes>
               </Suspense>
