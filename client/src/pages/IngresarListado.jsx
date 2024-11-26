@@ -104,7 +104,7 @@ const IngresarListado = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-100 h-screen flex justify-center">
+    <div className="p-8 bg-gray-100 h-screen flex justify-center mt-12">
       <div className="bg-white p-8 rounded-lg shadow-lg w-2/3">
         <div className="flex items-start justify-between">
           <div className="col-span-2 mb-4">
