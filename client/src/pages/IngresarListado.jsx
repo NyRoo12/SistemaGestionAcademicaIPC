@@ -20,8 +20,9 @@ const IngresarListado = () => {
     setFileName(file.name); // Guarda el nombre del archivo seleccionado
     event.target.blur(); // Libera el enfoque del input de archivo
     document.body.focus();
-    
+  
     const reader = new FileReader();
+  
     const validateColumns = (columns) => {
       const missingColumns = requiredColumns.filter(
         (col) => !columns.includes(col)
@@ -33,11 +34,12 @@ const IngresarListado = () => {
             ", "
           )}`,
         });
+        setStudents([]); // Limpia la vista previa
         return false;
       }
       return true;
     };
-
+  
     if (file.name.endsWith(".xlsx")) {
       reader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
@@ -45,17 +47,23 @@ const IngresarListado = () => {
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
+  
         const [headerRow, ...dataRows] = jsonData;
-
-        if (!validateColumns(headerRow)) return;
-
+  
+        if (!validateColumns(headerRow)) {
+          setStudents([]); // Limpia la vista previa
+          return;
+        }
+  
+        // Limpia el mensaje de error si el archivo es válido
+        setErrorModal({ open: false, message: "" });
+  
         const columnIndexes = {
           rut: headerRow.indexOf("R.U.N."),
           nombre: headerRow.indexOf("Nombre"),
           ano: headerRow.indexOf("Ingreso"),
         };
-
+  
         const loadedStudents = dataRows.map((row) => {
           return {
             rut: row[columnIndexes.rut],
@@ -63,18 +71,22 @@ const IngresarListado = () => {
             ano: row[columnIndexes.ano],
           };
         });
-
+  
         setStudents(loadedStudents);
       };
-      reader.onerror = () =>
+  
+      reader.onerror = () => {
         setErrorModal({ open: true, message: "Error al leer el archivo." });
+        setStudents([]); // Limpia la vista previa
+      };
+  
       reader.readAsArrayBuffer(file);
     } else {
       setErrorModal({
         open: true,
-        message:
-          "Formato de archivo no soportado. Cargue un archivo Excel (.xlsx).",
+        message: "Formato de archivo no soportado. Cargue un archivo Excel (.xlsx).",
       });
+      setStudents([]); // Limpia la vista previa
     }
   };
 
