@@ -11,6 +11,10 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+      nodeIntegration: false,
+      contextIsolation: true,
+      webSecurity: false, // Permitir acceso a recursos locales y blobs
+      enableRemoteModule: false,
     },
     autoHideMenuBar: true,
   });

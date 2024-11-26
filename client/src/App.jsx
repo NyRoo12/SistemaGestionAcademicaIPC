@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense, lazy } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import NavBar from "./components/navbar.jsx";
 import SearchBar from "./components/SearchBar.jsx";
@@ -9,6 +9,8 @@ import EstudianteDetalle from "./components/EstudianteDetalle.jsx";
 import BotonesAlumnos from "./pages/botonesAlumnos.jsx";
 import IngresarListado from "./pages/IngresarListado.jsx";
 import BotonesCertificados from "./pages/botonesCertificados.jsx";
+import SeleccionarCarrera from "./pages/SeleccionarCarrera.jsx";
+import PdfViewer from "./components/nominaPreview.jsx"
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para controlar si el usuario está logueado
@@ -54,6 +56,8 @@ export default function App() {
                     path="/estudiante/:rut"
                     element={<EstudianteDetalle />}
                   />
+                  <Route path="/certificado-detallado" element={<SeleccionarCarrera />} />
+                  <Route path="/nomina-estudiantes" element={<PdfViewer />} />
                 </Routes>
               </Suspense>
             </main>

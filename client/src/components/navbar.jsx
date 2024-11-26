@@ -67,7 +67,7 @@ function NavBar() {
               selected === 'ingresar' ? 'text-black' : 'text-gray-300 hover:text-white'
             } p-2 rounded-lg transition-all duration-300`}
           >
-            Ingresar alumnos
+            Ingresar Alumnos
           </Link>
 
           {/* Enlace 3 */}
@@ -78,7 +78,7 @@ function NavBar() {
               selected === 'certificado' ? 'text-black' : 'text-gray-300 hover:text-white'
             } p-2 rounded-lg transition-all duration-300`}
           >
-            Generar Certificado
+            Certificados
           </Link>
         </div>
       </div>
