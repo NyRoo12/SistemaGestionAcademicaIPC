@@ -1,20 +1,28 @@
 //estudiantes.repository.js
-
+import { HistorialAcademico } from "../models/HistorialAcademico.js";
 import { Estudiante } from "../models/Estudiantes.js";
 import { Op } from "sequelize";
 
-// Obtener todos los estudiantes
+// Obtener solo los estudiantes que tienen historial académico
 export async function getEstudiantes_() {
   try {
     const estudiantes = await Estudiante.findAll({
-      attributes: ["nombre", "rut", "carreraDestino", "ano"],
-      order: [["nombre", "DESC"]],
+      attributes: ["nombre", "rut", "carreraDestino", "ano"], // Selecciona las columnas necesarias
+      include: [
+        {
+          model: HistorialAcademico, // Relación con la tabla HistorialAcademico
+          attributes: [], // No necesitas las columnas de HistorialAcademico en el resultado
+          required: true, // Esto asegura que solo se incluyan estudiantes con historial académico
+        },
+      ],
+      order: [["nombre", "DESC"]], // Ordena los resultados por nombre de forma descendente
     });
     return estudiantes;
   } catch (error) {
-    throw new Error("Error al obtener todos los estudiantes");
+    throw new Error("Error al obtener estudiantes con historial académico");
   }
 }
+
 
 // Eliminar estudiante por RUT
 export async function eliminarEstudiante_(rut) {

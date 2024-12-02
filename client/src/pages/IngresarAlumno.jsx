@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useDropzone } from 'react-dropzone';
+import { useNavigate } from "react-router-dom";
 import * as XLSX from 'xlsx';
+import { RiFileExcel2Fill } from "react-icons/ri";
+
 
 function IngresarAlumno() {
   const [student, setStudent] = useState({
@@ -15,6 +18,7 @@ function IngresarAlumno() {
   const [step, setStep] = useState(1);
   const [careers, setCareers] = useState([]);
   const [studentsWithoutHistory, setStudentsWithoutHistory] = useState([]);
+  const navigate = useNavigate();
 
 
   const fetchCareers = async () => {
@@ -28,6 +32,20 @@ function IngresarAlumno() {
       console.error("Error fetching careers:", error);
     }
   };
+
+  const OverlayMessage = ({ message, onClose }) => {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-white p-4 rounded shadow-lg">
+          <p>{message}</p>
+          <button onClick={onClose} className="mt-4 px-4 py-2 bg-red-500 text-white rounded">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    );
+  };
+
 
   const fetchStudentsWithoutHistory = async () => {
     try {
@@ -56,11 +74,10 @@ function IngresarAlumno() {
       if (!response.ok) {
         throw new Error('Error al enviar el historial académico');
       }
-  
-      alert('Historial académico enviado exitosamente');
+      //alert('Historial académico enviado exitosamente');
     } catch (error) {
       console.error('Error al enviar historial académico:', error);
-      alert('Hubo un error al enviar el historial académico');
+      //alert('Hubo un error al enviar el historial académico');
     }
   };
 
@@ -189,6 +206,7 @@ function IngresarAlumno() {
     if (student.rut && data) {
       enviarAsignaturasDestino(student.rut, student.carrera);
       enviarHistorialAcademico(student.rut, data);
+      navigate("/botones-a");
     } else {
       alert('Por favor selecciona un estudiante y asegúrate de que el historial académico esté disponible');
     }
@@ -197,7 +215,7 @@ function IngresarAlumno() {
 
   return (
     <div className="p-8 bg-gray-100 h-screen flex justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-2/3 overflow-y-auto">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-2/3 overflow-y-auto mt-8">
         {step === 1 ? (
           <>
             <div className="flex items-start justify-between">
@@ -258,25 +276,27 @@ function IngresarAlumno() {
 
             <div className="mt-8">
               <h2 className="font-bold text-xl mb-4">Historial académico</h2>
-              <div
-                {...getRootProps()}
-                className="bg-gray-300 p-6 rounded-lg flex justify-center items-center cursor-pointer"
-              >
-                <input {...getInputProps()} />
-                <p className="ml-4 text-gray-600 text-center">
-                  Arrastra un archivo Excel aquí, o haz clic para seleccionarlo
-                </p>
-              </div>
 
-              {fileName && (
-                <div className="mt-4">
-                  <p className="text-green-600">{fileName} ha sido cargado.</p>
+              {fileName ? (
+                <div className="bg-gray-300 p-6 rounded-lg flex flex-col justify-center items-center">
+                  <RiFileExcel2Fill size={100}/>
+                  <p className="text-gray-800 mb-2 font-semibold">{fileName}</p>
                   <button
                     onClick={handleDeleteFile}
                     className="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
                   >
                     Eliminar archivo
                   </button>
+                </div>
+              ) : (
+                <div
+                  {...getRootProps()}
+                  className="bg-gray-300 p-6 rounded-lg flex justify-center items-center cursor-pointer"
+                >
+                  <input {...getInputProps()} />
+                  <p className="ml-4 text-gray-600 text-center">
+                    Arrastra un archivo Excel aquí, o haz clic para seleccionarlo
+                  </p>
                 </div>
               )}
             </div>
