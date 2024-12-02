@@ -1,4 +1,4 @@
-import PDFDocument from 'pdfkit'
+import PDFDocument from 'pdfkit-table'
 
 export function buildPDF(dataCallback, endCallback) {
     const doc = new PDFDocument()

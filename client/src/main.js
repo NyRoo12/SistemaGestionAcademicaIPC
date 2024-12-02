@@ -11,10 +11,10 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-      nodeIntegration: false,
-      contextIsolation: true,
+      nodeIntegration: true,
+      contextIsolation: false,
       webSecurity: false, // Permitir acceso a recursos locales y blobs
-      enableRemoteModule: false,
+      enableRemoteModule: true,
     },
     autoHideMenuBar: true,
   });
@@ -32,7 +32,7 @@ app.whenReady().then(() => {
       responseHeaders: {
         ...details.responseHeaders,
         "Content-Security-Policy": [
-          "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' http://localhost:3001; style-src 'self' 'unsafe-inline'",
+          "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' http://localhost:3000/ http://localhost:3001/; style-src 'self' 'unsafe-inline'; object-src 'self'; frame-src 'self' blob:;",
         ],
       },
     });

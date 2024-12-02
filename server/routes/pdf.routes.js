@@ -9,7 +9,7 @@ router.get('/nomina-pdf', (req, res) => {
 
 	const stream = res.writeHead(200, {
 		"Content-Type": "application/pdf",
-		//"Content-Disposition": "inline; filename=nomina.pdf",
+		// "Content-Disposition": "inline; filename=nomina.pdf",
 	})
 
 	buildPDF(
