@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDropzone } from 'react-dropzone';
 import * as XLSX from 'xlsx';
+import { useNavigate } from "react-router-dom"; // Importar useNavigate
 
 function IngresarAlumno() {
+  const navigate = useNavigate();
   const [student, setStudent] = useState({
     nombre: "",
     rut: "",
@@ -10,19 +12,18 @@ function IngresarAlumno() {
     año: "",
   });
 
+  const [modal, setModal] = useState({ isOpen: false, message: "" });
   const [data, setData] = useState([]);
   const [fileName, setFileName] = useState("");
   const [step, setStep] = useState(1);
   const [careers, setCareers] = useState([]);
   const [studentsWithoutHistory, setStudentsWithoutHistory] = useState([]);
 
-
   const fetchCareers = async () => {
     try {
       const response = await fetch(`http://localhost:3001/api/asignaturasEquivalentes/carreras`);
       if (!response.ok) throw new Error("Error en la solicitud");
       const result = await response.json();
-      console.log(result);
       setCareers(result);
     } catch (error) {
       console.error("Error fetching careers:", error);
@@ -35,73 +36,70 @@ function IngresarAlumno() {
       if (!response.ok) throw new Error("Error al obtener alumnos sin historial");
       const result = await response.json();
       setStudentsWithoutHistory(result.data);
-      console.log(result.data);
     } catch (error) {
       console.error("Error fetching students without history:", error);
     }
   };
-
-  const enviarHistorialAcademico = async (rut, historialAcademico) => {
-    try {
-      const response = await fetch(`http://localhost:3001/api/historialAcademico/agregarHistorial/${rut}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(historialAcademico)
-      });
-
-      console.log(JSON.stringify(historialAcademico));
-  
-      if (!response.ok) {
-        throw new Error('Error al enviar el historial académico');
-      }
-  
-      alert('Historial académico enviado exitosamente');
-    } catch (error) {
-      console.error('Error al enviar historial académico:', error);
-      alert('Hubo un error al enviar el historial académico');
-    }
-  };
-
-  const enviarAsignaturasDestino = async (rut, asignaturasDestino) => {
-    try {
-      // Crear el objeto con la propiedad carreraDestino
-      const data = {
-        carreraDestino: asignaturasDestino // Asignar el valor que corresponde aquí
-      };
-
-      console.log(data);
-  
-      const response = await fetch(`http://localhost:3001/api/estudiantes/cargarCarreraDestino/${rut}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data), // Enviar el objeto con carreraDestino
-      });
-
-  
-      if (!response.ok) {
-        throw new Error('Error al enviar las asignaturas de destino');
-      }
-
-    } catch (error) {
-      console.error('Error al enviar carrera de destino:', error);
-      alert('Hubo un error al enviar la carrera de destino');
-    }
-  };
-  
-  
 
   useEffect(() => {
     fetchCareers();
     fetchStudentsWithoutHistory();
   }, []);
 
-  // Función para formatear el RUT
+  const openModal = (message) => {
+    setModal({ isOpen: true, message });
+  };
+
+  const closeModal = () => {
+    setModal({ isOpen: false, message: "" });
+    if (modal.message === "Historial académico enviado exitosamente") {
+      navigate("/botones-a");
+    }
+  };
+
+  const enviarHistorialAcademico = async (rut, historialAcademico) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/historialAcademico/agregarHistorial/${rut}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(historialAcademico),
+        }
+      );
+      if (!response.ok) {
+        throw new Error('Error al enviar el historial académico');
+      }
+      openModal('Historial académico enviado exitosamente');
+    } catch (error) {
+      console.error('Error al enviar historial académico:', error);
+      openModal('Hubo un error al enviar el historial académico');
+    }
+  };
+  
+
+  const enviarAsignaturasDestino = async (rut, carreraDestino) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/estudiantes/cargarCarreraDestino/${rut}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ carreraDestino }),
+        }
+      );
+    if (!response.ok) {
+        throw new Error('Error al enviar las asignaturas de destino');
+      }
+    } catch (error) {
+      console.error('Error al enviar carrera de destino:', error);
+      openModal('Hubo un error al enviar la carrera de destino');
+    }
+  };
+  
+
   const formatRUT = (value) => {
-    if (!value) return ""; // Devuelve cadena vacía si el valor está vacío
+    if (!value) return "";
     return value.replace(/^(\d{1,2})(\d{3})(\d{3})(\d{1})$/, "$1.$2.$3-$4");
   };
 
@@ -122,9 +120,8 @@ function IngresarAlumno() {
       const workbook = XLSX.read(binaryStr, { type: 'binary' });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }); // Usamos header: 1 para obtener todas las filas sin encabezados
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-      // Procesamiento de bloques
       const processedData = [];
       jsonData.forEach((row) => {
         if (
@@ -181,19 +178,19 @@ function IngresarAlumno() {
         año: studentFound.ano,
       });
     } else {
-      alert("El estudiante no se encuentra en la lista de alumnos sin historial.");
+      openModal("El estudiante no se encuentra en la lista de alumnos sin historial.");
     }
   };
 
   const handleConfirmar = () => {
-    if (student.rut && data) {
+    if (student.rut && data.length > 0) {
       enviarAsignaturasDestino(student.rut, student.carrera);
       enviarHistorialAcademico(student.rut, data);
     } else {
-      alert('Por favor selecciona un estudiante y asegúrate de que el historial académico esté disponible');
+      openModal('Por favor selecciona un estudiante y asegúrate de que el historial académico esté disponible');
     }
   };
-
+  
 
   return (
     <div className="p-8 bg-gray-100 h-screen flex justify-center">
@@ -255,7 +252,7 @@ function IngresarAlumno() {
                 </div>
               </div>
             </div>
-
+  
             <div className="mt-8">
               <h2 className="font-bold text-xl mb-4">Historial académico</h2>
               <div
@@ -267,7 +264,7 @@ function IngresarAlumno() {
                   Arrastra un archivo Excel aquí, o haz clic para seleccionarlo
                 </p>
               </div>
-
+  
               {fileName && (
                 <div className="mt-4">
                   <p className="text-green-600">{fileName} ha sido cargado.</p>
@@ -280,7 +277,7 @@ function IngresarAlumno() {
                 </div>
               )}
             </div>
-
+  
             <button
               onClick={handleContinue}
               className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -312,7 +309,7 @@ function IngresarAlumno() {
                 </div>
               </div>
             </div>
-
+  
             <h3 className="text-xl font-semibold mb-4">Datos Académicos</h3>
             <div style={{ overflowX: "auto" }}>
               <table border="1" cellPadding="10" style={{ width: "100%", textAlign: "center" }}>
@@ -348,8 +345,8 @@ function IngresarAlumno() {
                 </tbody>
               </table>
             </div>
-
-             <div className="flex justify-end mt-4 space-x-2">
+  
+            <div className="flex justify-end mt-4 space-x-2">
               <button
                 onClick={handleBack}
                 className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
@@ -364,6 +361,22 @@ function IngresarAlumno() {
               </button>
             </div>
           </>
+        )}
+  
+        {/* Modal */}
+        {modal.isOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-8 rounded shadow-lg max-w-sm w-full">
+              <h2 className="text-lg font-bold mb-4">Mensaje</h2>
+              <p className="mb-6">{modal.message}</p>
+              <button
+                onClick={closeModal}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>
