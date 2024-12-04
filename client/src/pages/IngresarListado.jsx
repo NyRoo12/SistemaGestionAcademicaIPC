@@ -10,6 +10,11 @@ const IngresarListado = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fileName, setFileName] = useState(""); // Estado para el nombre del archivo cargado
   const navigate = useNavigate();
+  const [notificationModal, setNotificationModal] = useState({
+    open: false,
+    message: "",
+  });
+  
 
   const requiredColumns = ["R.U.N.", "Nombre", "Ingreso"];
 
@@ -102,25 +107,42 @@ const IngresarListado = () => {
           body: JSON.stringify(students),
         }
       );
+  
       if (!response.ok) {
         throw new Error("Error en la carga masiva de estudiantes.");
       }
-      alert("Estudiantes cargados exitosamente.");
-      setStudents([]);
+  
+      // Cierra el modal de confirmación y muestra el de notificación
       setIsModalOpen(false);
-
-      navigate("/botones-a");
+      setNotificationModal({
+        open: true,
+        message: "¡Los archivos se cargaron con éxito!",
+      });
+  
+      // Limpia la lista de estudiantes después del éxito
+      setStudents([]);
     } catch (error) {
-      console.error("Error en la carga masiva:", error);
+      setIsModalOpen(false);
+      setNotificationModal({
+        open: true,
+        message: "Hubo un problema al cargar los archivos. Intenta nuevamente.",
+      });
     }
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+    navigate("/botones-a"); // Redirige al finalizar
+  };
+
+
   return (
-    <div className="p-8 bg-gray-100 h-screen flex justify-center relative">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-2/3 mt-8 max-h-screen overflow-hidden">
+    <div className="p-8 bg-gray-100 h-screen flex justify-center">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-2/3">
         <div className="flex items-start justify-between">
           <div className="col-span-2 mb-4">
             <h2 className="font-bold text-xl mb-4">Carga Masiva de Estudiantes</h2>
+            {/* Selector estilizado */}
             <label className="flex items-center border border-gray-300 rounded-md px-4 py-2 cursor-pointer hover:bg-gray-100">
               {fileName && (
                 <FontAwesomeIcon
@@ -144,22 +166,22 @@ const IngresarListado = () => {
             )}
           </div>
         </div>
-
-        <div className="flex flex-col max-h-96">
+  
+        <div className="mt-8">
           <h2 className="font-bold text-xl mb-4">Vista Previa</h2>
           {students.length > 0 ? (
-            <div className="flex-grow overflow-y-auto border border-gray-300 rounded-md max-h-[calc(100%-3rem)]">
-              <table className="table-auto w-full bg-white">
-                <thead className="sticky top-0 bg-gray-200">
+            <div className="max-h-96 overflow-y-auto">
+              <table className="min-w-full bg-white">
+                <thead>
                   <tr>
-                    <th className="py-2 px-4 border-b">R.U.N.</th>
-                    <th className="py-2 px-4 border-b">Nombre</th>
-                    <th className="py-2 px-4 border-b">Año de ingreso</th>
+                    <th className="py-2">R.U.N.</th>
+                    <th className="py-2">Nombre</th>
+                    <th className="py-2">Año de ingreso</th>
                   </tr>
                 </thead>
                 <tbody>
                   {students.map((student, index) => (
-                    <tr key={index} className="hover:bg-gray-100">
+                    <tr key={index}>
                       <td className="border px-4 py-2">{student.rut}</td>
                       <td className="border px-4 py-2">{student.nombre}</td>
                       <td className="border px-4 py-2">{student.ano}</td>
@@ -172,41 +194,64 @@ const IngresarListado = () => {
             <p className="text-gray-600">No hay estudiantes cargados aún.</p>
           )}
         </div>
-      </div>
-
-      {/* Botón de Enviar posicionado abajo a la derecha */}
-      <button
-        className="absolute bottom-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600"
-        disabled={students.length === 0}
-        onClick={() => setIsModalOpen(true)}
-      >
-        Enviar
-      </button>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-            <h2 className="font-bold text-xl mb-4">Confirmación</h2>
-            <p>¿Estás seguro de que deseas cargar estos estudiantes?</p>
-            <div className="flex mt-4 space-x-2 justify-end">
-              <button
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
-                onClick={confirmSubmission}
-              >
-                Sí, Confirmar
-              </button>
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
-                onClick={() => setIsModalOpen(false)}
-              >
-                Cancelar
-              </button>
+  
+        <div className="flex justify-end mt-8">
+          <button
+            className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600"
+            disabled={students.length === 0}
+            onClick={() => setIsModalOpen(true)}
+          >
+            Enviar
+          </button>
+        </div>
+  
+        {/* Modal de confirmación */}
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+              <h2 className="font-bold text-xl mb-4">Confirmación</h2>
+              <p>¿Estás seguro de que deseas cargar estos estudiantes?</p>
+              <div className="flex mt-4 space-x-2 justify-end">
+                <button
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
+                  onClick={confirmSubmission}
+                >
+                  Sí, Confirmar
+                </button>
+                <button
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+  
+        {/* Modal de notificación */}
+        {notificationModal.open && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+              <h2 className="font-bold text-xl mb-4">Notificación</h2>
+              <p>{notificationModal.message}</p>
+              <div className="flex justify-center mt-4">
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  onClick={() => {
+                    setNotificationModal({ open: false, message: "" });
+                    navigate("/botones-a"); // Navegar tras cerrar
+                  }}
+                >
+                  Aceptar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
-  );
+  );  
 };
 
 export default IngresarListado;

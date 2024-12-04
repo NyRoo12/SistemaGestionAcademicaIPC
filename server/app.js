@@ -11,7 +11,10 @@ import estudiantesRoutes from './routes/estudiantes.routes.js';
 import asignaturasIPCRoutes from './routes/asignaturasIpc.routes.js';
 import historialAcademicoRoutes from './routes/historialAcademico.routes.js';
 import asignaturasEquivalentesRoutes from './routes/asignaturasEquivalentes.routes.js';
-import userRoutes from './routes/user.routes.js'; // Asegúrate de que el nombre y el archivo coincidan
+import userRoutes from './routes/user.routes.js'; 
+import logsRoutes from './routes/logs.routes.js';
+
+
 
 app.use(express.json());
 
@@ -29,6 +32,8 @@ app.use("/api/estudiantes", estudiantesRoutes);
 app.use("/api/asignaturasIPC", asignaturasIPCRoutes);
 app.use("/api/historialAcademico", historialAcademicoRoutes);
 app.use("/api/asignaturasEquivalentes", asignaturasEquivalentesRoutes);
-app.use("/api/login", userRoutes);
+app.use('/api/logs', logsRoutes);
+app.use('/api/login', userRoutes);
+
 
 export default app;

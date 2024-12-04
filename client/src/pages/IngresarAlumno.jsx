@@ -108,8 +108,6 @@ function IngresarAlumno() {
       alert('Hubo un error al enviar la carrera de destino');
     }
   };
-  
-  
 
   useEffect(() => {
     fetchCareers();
