@@ -7,12 +7,15 @@ import {
   cargaMasiva,
   eliminarEstudiante,
   cargarCarreraDestino,
+  getPorCarrera,
 } from "../controllers/estudiantes.controller.js";
 
 const router = Router();
 
 // Ruta para obtener todos los estudiantes
 router.get("/", getEstudiantes);
+
+router.get("/porCarrera/:id", getPorCarrera)
 
 // Ruta para crear un nuevo estudiante
 router.post("/crear", createEstudiante);

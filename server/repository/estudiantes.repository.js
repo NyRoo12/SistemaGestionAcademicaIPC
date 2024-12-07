@@ -125,3 +125,15 @@ export async function cargaCarreraDestino_(rut) {
     throw new Error("Error al obtener la carrera de destino");
   }
 }
+
+export async function getPorCarrera_(carrera) {
+  try {
+    const estudiantes = await Estudiante.findAll({
+      where: { carreraDestino: carrera },
+    });
+
+    return estudiantes;
+  } catch (error) {
+    throw new Error(`Error al obtener estudiantes por carrera: ${error.message}`);
+  }
+}

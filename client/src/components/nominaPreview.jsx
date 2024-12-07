@@ -138,7 +138,7 @@ const PdfViewer = () => {
             ) : (
                 <p>Cargando PDF...</p>
             )}
-            <button onClick={handleClick}>Descargar PDF</button>
+            <button onClick={downloadPdf}>Descargar PDF</button>
         </div>
     );
 };

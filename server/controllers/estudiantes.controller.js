@@ -6,6 +6,7 @@ import {
   cargaMasiva_,
   eliminarEstudiante_,
   cargaCarreraDestino_,
+  getPorCarrera_,
 } from "../repository/estudiantes.repository.js";
 
 import { Estudiante } from "../models/Estudiantes.js";
@@ -107,15 +108,15 @@ export async function getDetalle(req, res) {
       .json({ error: "El RUT es necesario para la búsqueda" });
   }
 
-  getDetalle_(rut).then(
-    (data) => {
-      res.json(data);
-      // res.status(200).json({status : true, data : data})
-    },
-    (error) => {
-      res.status(400).json({ status: false, error: error.message });
-    }
-  );
+    getDetalle_(rut).then(
+      (data) => {
+        res.json(data);
+        // res.status(200).json({status : true, data : data})
+      },
+      (error) => {
+        res.status(400).json({ status: false, error: error.message });
+      }
+    );
 }
 
 // Definir la función cargarCarreraDestino
@@ -143,3 +144,16 @@ export const cargarCarreraDestino = async (req, res) => {
     });
   }
 };
+
+export async function getPorCarrera(req, res) {
+  const carreraId = req.params.id;
+
+  try {
+    const data = await getPorCarrera_(carreraId);
+    res.json(data); // Responde con los datos obtenidos
+    // Alternativa: res.status(200).json({ status: true, data: data });
+  } catch (error) {
+    res.status(400).json({ status: false, error: error.message });
+  }
+
+}

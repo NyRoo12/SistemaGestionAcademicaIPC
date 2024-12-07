@@ -1,21 +1,13 @@
 import { Router } from "express";
 import {
-    buildPDF,
-} from "../controllers/pdfNomina.controller.js";
+    getNomina,
+	getDetallado,
+} from "../controllers/pdf.controller.js";
 
 const router = Router();
 
-router.get('/nomina-pdf', (req, res) => {
+router.get('/nomina', getNomina);
 
-	const stream = res.writeHead(200, {
-		"Content-Type": "application/pdf",
-		// "Content-Disposition": "inline; filename=nomina.pdf",
-	})
-
-	buildPDF(
-		(data) => stream.write(data), 
-		() => stream.end()
-	);
-});
+router.get('/detallado/:id', getDetallado)
 
 export default router;

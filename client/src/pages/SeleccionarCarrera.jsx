@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SeleccionarCarrera = () => {
-  const [careers, setCareers] = useState([]);
   const navigate = useNavigate();
+  const [careers, setCareers] = useState([]);
+  const [pdfUrl, setPdfUrl] = useState(null);
 
   // Llama al backend para obtener las carreras
   const fetchCareers = async () => {
@@ -15,6 +16,22 @@ const SeleccionarCarrera = () => {
       setCareers(result);
     } catch (error) {
       console.error("Error fetching careers:", error);
+    }
+  };
+
+
+  const handlePreview = async (id) => {
+    try {
+      // Realizar solicitud GET al backend para obtener el PDF
+      const response = await axios.get(`http://localhost:3001/api/pdf/detallado/${id}`, {
+        responseType: 'blob', // Esto asegura que la respuesta sea el archivo binario
+      });
+
+      // Crear una URL para el PDF recibido
+      const url = URL.createObjectURL(response.data);
+      setPdfUrl(url); // Establecer la URL para la previsualización
+    } catch (error) {
+      console.error('Error obteniendo el PDF:', error);
     }
   };
 
@@ -37,6 +54,8 @@ const SeleccionarCarrera = () => {
         ))}
       </div>
     </div>
+
+    
   );
 };
 
