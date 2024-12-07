@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 const BotonEliminar = ({ rut }) => {
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate(); // Hook para navegar entre pantallas
+  const navigate = useNavigate();
 
   const handleEliminar = async () => {
     console.log("Eliminar estudiante con RUT:", rut);
 
     try {
-      // Primero eliminar el historial
+      // Eliminar historial académico
       const historialResponse = await fetch(
         `http://localhost:3001/api/historialAcademico/eliminarHistorial/${rut}`,
         {
@@ -24,55 +24,55 @@ const BotonEliminar = ({ rut }) => {
         throw new Error("Error al eliminar el historial académico");
       }
 
-
-      // Si la eliminación del historial es exitosa, proceder con la eliminación del estudiante
-      const estudianteResponse = await fetch(
-        `http://localhost:3001/api/estudiantes/eliminarEstudiante?query=${encodeURIComponent(rut)}`,
+      // Eliminar carrera de destino
+      const carreraResponse = await fetch(
+        `http://localhost:3001/api/estudiantes/eliminarCarreraDestino/${rut}`,
         {
-          method: "DELETE",
+          method: "DELETE", // Usamos DELETE para eliminar el campo de carreraDestino
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
 
-      const estudianteData = await estudianteResponse.json();
-
-      if (estudianteResponse.ok) {
-        alert(estudianteData.message); // Mostrar el mensaje de éxito del estudiante
-        navigate("/"); // Redirige a la pantalla principal u otra ruta
-      } else {
-        alert(estudianteData.error); // Mostrar el mensaje de error
+      if (!carreraResponse.ok) {
+        throw new Error("Error al eliminar la carrera de destino");
       }
+
+      // Redirigir a la pantalla principal después de eliminar
+      navigate("/"); // Redirige al inicio o página de estudiantes
     } catch (error) {
-      console.error("Error al eliminar el historial o el estudiante:", error);
-      alert("Hubo un error al eliminar el historial o el estudiante");
+      console.error("Error al eliminar", error);
+      alert("Hubo un error al eliminar los datos: " + error.message);
     } finally {
-      setShowModal(false); // Cierra el modal después de intentar eliminar
+      setShowModal(false); // Cerrar modal al finalizar
     }
   };
 
   return (
-    <div className="fixed bottom-4 left-4">
+    <div className="flex justify-end mb-4"> {/* Alineación a la derecha */}
       <button
-        onClick={() => setShowModal(true)} // Muestra el modal de confirmación
-        className="bg-red-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out"
+        onClick={() => setShowModal(true)}
+        className="bg-red-500 text-white h-12 w-48 rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out flex items-center justify-center"
+        style={{ minWidth: "12rem" }} // Fija el tamaño mínimo
       >
-        Eliminar Estudiante
+        Eliminar Historial
       </button>
 
-      {/* Modal de confirmación */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
             <h2 className="text-lg font-bold mb-4">Confirmar eliminación</h2>
-            <p>¿Estás seguro de que deseas eliminar el estudiante con RUT {rut}?</p>
+            <p>¿Estás seguro de que deseas eliminar el historial académico y la carrera de destino de {rut}?</p>
             <div className="flex justify-end mt-6">
               <button
-                onClick={() => setShowModal(false)} // Cierra el modal sin eliminar
+                onClick={() => setShowModal(false)}
                 className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg mr-2 hover:bg-gray-400 transition duration-300"
               >
                 Cancelar
               </button>
               <button
-                onClick={handleEliminar} // Llama a la función de eliminación
+                onClick={handleEliminar}
                 className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300"
               >
                 Confirmar

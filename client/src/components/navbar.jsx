@@ -39,43 +39,44 @@ function NavBar() {
   };
 
   return (
-    <nav className="relative bg-gray-800 p-4 flex items-center">
+    <nav className="fixed top-0 left-0 w-full bg-gray-800 p-4 flex items-center z-50"> 
       <img src={logo} alt="Logo" className="w-15 h-12 rounded-lg mr-0" />
       <div className="flex flex-1 justify-start ml-8 relative">
         {/* Cuadro blanco animado con tamaño dinámico */}
         <div
           className={`absolute top-0 left-0 h-full bg-gray-100 rounded-lg transition-all duration-500 ease-in-out ${getPosition()} ${getWidth()}`}
         ></div>
-
         <div className="space-x-8 flex relative z-10">
-          {/* Enlace 1 */}
+          {/* Enlaces */}
           <Link
             to="/"
-            onClick={() => handleSelect('buscar')}
+            onClick={() => handleSelect("buscar")}
             className={`${
-              selected === 'buscar' ? 'text-black' : 'text-gray-300 hover:text-white'
+              selected === "buscar"
+                ? "text-black"
+                : "text-gray-300 hover:text-white"
             } p-2 rounded-lg transition-all duration-300`}
           >
             Buscar Alumnos
           </Link>
-
-          {/* Enlace 2 */}
           <Link
             to="/botones-a"
-            onClick={() => handleSelect('ingresar')}
+            onClick={() => handleSelect("ingresar")}
             className={`${
-              selected === 'ingresar' ? 'text-black' : 'text-gray-300 hover:text-white'
+              selected === "ingresar"
+                ? "text-black"
+                : "text-gray-300 hover:text-white"
             } p-2 rounded-lg transition-all duration-300`}
           >
-            Ingresar alumnos
+            Ingresar Alumnos
           </Link>
-
-          {/* Enlace 3 */}
           <Link
             to="/botones-c"
-            onClick={() => handleSelect('certificado')}
+            onClick={() => handleSelect("certificado")}
             className={`${
-              selected === 'certificado' ? 'text-black' : 'text-gray-300 hover:text-white'
+              selected === "certificado"
+                ? "text-black"
+                : "text-gray-300 hover:text-white"
             } p-2 rounded-lg transition-all duration-300`}
           >
             Generar Certificado

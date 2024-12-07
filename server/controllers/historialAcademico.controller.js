@@ -1,3 +1,4 @@
+//historialAcademico.controller
 import {
   getTodoHistorial_,
   postHistorial_,
@@ -6,6 +7,7 @@ import {
   getEstudiantesSinHistorial_,
   deleteHistorial_,
 } from "../repository/historialAcademico.repository.js";
+
 
 export async function getTodoHistorial(req, res) {
   try {
@@ -25,6 +27,7 @@ export async function getHistorialPorRut(req, res) {
     const formattedData = registros.map((registro) => {
       return {
         codigo_IPC: registro.AsignaturasIPC.codigo_IPC,
+        codigo_IPC_bruto:registro.codigo_IPC_bruto,
         nombre_IPC: registro.AsignaturasIPC.nombre_IPC,
         nota: registro.nota.toFixed(1), // Aseguramos que sea un string con un decimal
         semestre: registro.semestre === '1' ? 'Diurno' : 'Vespertino', // Ejemplo de mapeo de régimen
@@ -106,4 +109,3 @@ export const deleteHistorial = async (req, res) => {
     return res.status(500).json({ message: "Hubo un error al eliminar el historial académico." });
   }
 };
-

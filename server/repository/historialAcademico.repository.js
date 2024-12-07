@@ -3,7 +3,6 @@ import { HistorialAcademico } from "../models/HistorialAcademico.js";
 import { Estudiante } from "../models/Estudiantes.js";
 import { Op, Sequelize } from "sequelize";
 
-
 //-------------------------------------------------------------------------------------------------------
 
 export async function getEstudiantesSinHistorial_() {
@@ -52,7 +51,7 @@ export async function postHistorial_(rut, historial) {
       // Crear el nuevo registro
       const nuevoRegistro = await HistorialAcademico.create({
         rut_estudiante: rut,
-        codigo_IPC: Código,
+        codigo_IPC_bruto: Código,
         nota: parseFloat(Nota),
         ano: parseInt(Año, 10),
         semestre: Periodo,
@@ -80,7 +79,7 @@ export async function getHistorialPorRut_(rut) {
           attributes: ["codigo_IPC", "nombre_IPC"],
         },
       ],
-      attributes: ["nota", "ano", "semestre", "estado"],
+      attributes: ["codigo_IPC_bruto","nota", "ano", "semestre", "estado"],
     });
     return registros;
   } catch (error) {
