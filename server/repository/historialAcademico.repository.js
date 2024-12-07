@@ -61,7 +61,7 @@ export async function obtenerPorRut_(rut) {
           attributes: ["codigo_IPC", "nombre_IPC"],
         },
       ],
-      attributes: ["nota", "ano", "semestre", "estado"],
+      attributes: ["codigo_IPC_bruto","nota", "ano", "semestre", "estado"],
     });
     return registros;
   } catch (error) {

@@ -27,6 +27,7 @@ export async function obtenerHistorialPorRut(req, res) {
     const formattedData = registros.map((registro) => {
       return {
         codigo_IPC: registro.AsignaturasIPC.codigo_IPC,
+        codigo_IPC_bruto: registro.codigo_IPC_bruto,
         nombre_IPC: registro.AsignaturasIPC.nombre_IPC,
         nota: registro.nota.toFixed(1), // Aseguramos que sea un string con un decimal
         semestre: registro.semestre === '1' ? 'Diurno' : 'Vespertino', // Ejemplo de mapeo de régimen
@@ -71,13 +72,13 @@ export async function agregar(req, res) {
 
       // Crear un nuevo registro para cada asignatura en el historial
       const nuevoRegistro = await HistorialAcademico.create({
-        rut_estudiante: rut, // Usamos el rut obtenido desde los parámetros
-        codigo_IPC: Código, // Mapea el código de la asignatura
-        nota: parseFloat(Nota), // Convierte la nota a número
-        ano: parseInt(Año, 10), // Convierte el año a número
-        semestre: Periodo, // Mapea el periodo (semestre)
+        rut_estudiante: rut,
+        codigo_IPC_bruto: Código, // Ahora usamos `Codigo` para `codigo_IPC_bruto`
+        nota: parseFloat(Nota),
+        ano: parseInt(Año, 10),
+        semestre: Periodo,
         estado,
-      });
+      });      
       registros.push(nuevoRegistro);
     }
 

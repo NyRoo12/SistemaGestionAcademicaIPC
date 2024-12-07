@@ -41,6 +41,7 @@ const HistorialAcademico = () => {
           throw new Error("Error al obtener el historial");
         }
         const result = await response.json();
+        console.log(result);
         setHistorial(result);
       } catch (error) {
         console.error("Error fetching academic history:", error);
@@ -150,11 +151,13 @@ const HistorialAcademico = () => {
                   nombreAsignatura = equivalencia.nombre;
                 }
               }
+              //console.log(item.codigo_IPC_bruto);
 
               return (
                 <TarjetaHistorial
                   key={index}
                   codigoIPC={item.codigo_IPC}
+                  codigoIPCBRUTO={item.codigo_IPC_bruto}
                   codigoDestino={codigoDestino}
                   nombre={nombreAsignatura}
                   nota={item.nota}

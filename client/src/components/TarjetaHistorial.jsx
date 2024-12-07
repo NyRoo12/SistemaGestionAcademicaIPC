@@ -2,6 +2,7 @@ import React from "react";
 
 const TarjetaHistorial = ({
   codigoIPC,
+  codigoIPCBRUTO,
   codigoDestino = null,
   nombre,
   nota,
@@ -31,7 +32,7 @@ const TarjetaHistorial = ({
     >
       <div className="flex justify-between text-sm">
         <div className="w-1/5 p-1">
-          <p>{codigoIPC}</p>
+          <p>{codigoIPCBRUTO}</p>
         </div>
         {codigoDestino && (
           <div className="w-1/5 p-1">
