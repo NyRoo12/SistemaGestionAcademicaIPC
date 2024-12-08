@@ -7,7 +7,6 @@ export async function getNomina(req, res) {
 
 	const stream = res.writeHead(200, {
 		"Content-Type": "application/pdf",
-		// "Content-Disposition": "inline; filename=nomina.pdf",
 	})
 
 	buildNomina(
@@ -21,7 +20,6 @@ export async function getDetallado(req, res) {
     
     const stream = res.writeHead(200, {
 		"Content-Type": "application/pdf",
-		// "Content-Disposition": "inline; filename=nomina.pdf",
 	})
 
 	buildDetallado(
