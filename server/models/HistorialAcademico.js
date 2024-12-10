@@ -3,52 +3,75 @@ import { sequelize } from "../config/db.js";
 import { Estudiante } from "./Estudiantes.js"; // Importa el modelo Estudiante
 import { AsignaturasIPC } from "./AsignaturasIPC.js"; // Importa el modelo AsignaturasIPC
 
-// Definir el modelo para 'historialAcademico'
 export const HistorialAcademico = sequelize.define(
   "HistorialAcademico",
   {
     rut_estudiante: {
-      type: DataTypes.STRING(20), // varchar(20)
+      type: DataTypes.STRING(20),
       allowNull: false,
       references: {
-        model: Estudiante, // Referencia al modelo Estudiante
-        key: "rut", // Clave foránea al campo 'rut' de la tabla 'estudiante'
+        model: Estudiante,
+        key: "rut",
         primaryKey: true,
       },
     },
-    codigo_IPC: {
-      type: DataTypes.STRING(30), // varchar(30)
+    codigo_IPC_bruto: {
+      type: DataTypes.STRING(50), // Campo adicional para almacenar el código completo
       allowNull: false,
+    },
+    codigo_IPC: {
+      type: DataTypes.STRING(30),
+      allowNull: true,
       references: {
-        model: AsignaturasIPC, // Referencia al modelo AsignaturasIPC
-        key: "codigo_IPC", // Clave foránea al campo 'codigo_IPC' de la tabla 'asignaturasIPC'
+        model: AsignaturasIPC,
+        key: "codigo_IPC",
         primaryKey: true,
       },
     },
     nota: {
-      type: DataTypes.FLOAT, // float
-      allowNull: true, // DEFAULT NULL
+      type: DataTypes.FLOAT,
+      allowNull: true,
     },
     ano: {
-      type: DataTypes.INTEGER, // int
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
     },
     semestre: {
-      type: DataTypes.STRING(30), // varchar(30)
+      type: DataTypes.STRING(30),
       allowNull: false,
       primaryKey: true,
     },
     estado: {
-      type: DataTypes.TINYINT, // tinyint(1)
-      allowNull: true, // DEFAULT NULL
+      type: DataTypes.TINYINT,
+      allowNull: true,
     },
   },
   {
-    tableName: "historialAcademico", // Nombre explícito de la tabla en la base de datos
-    timestamps: false, // No se incluyen createdAt y updatedAt
+    tableName: "historialAcademico",
+    timestamps: false,
+    hooks: {
+      // Hook para rellenar automáticamente `codigo_IPC` desde `codigo_IPC_bruto`
+      beforeCreate: (record) => {
+        const bruto = record.codigo_IPC_bruto;
+        if (bruto.includes("-")) {
+          record.codigo_IPC = bruto.split("-")[0]; // Extrae la parte antes del guion
+        } else {
+          throw new Error("Formato de `codigo_IPC_bruto` inválido.");
+        }
+      },
+      beforeUpdate: (record) => {
+        const bruto = record.codigo_IPC_bruto;
+        if (bruto.includes("-")) {
+          record.codigo_IPC = bruto.split("-")[0];
+        } else {
+          throw new Error("Formato de `codigo_IPC_bruto` inválido.");
+        }
+      },
+    },
   }
 );
+
 
 // Relación N:1 con estudiantes
 HistorialAcademico.belongsTo(Estudiante, {
