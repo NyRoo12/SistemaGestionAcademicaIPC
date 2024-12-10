@@ -240,7 +240,7 @@ const IngresarListado = () => {
                   className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                   onClick={() => {
                     setNotificationModal({ open: false, message: "" });
-                    navigate("/botones-a"); // Navegar tras cerrar
+                    navigate("/botones-a");
                   }}
                 >
                   Aceptar
