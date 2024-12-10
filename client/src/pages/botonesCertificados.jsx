@@ -10,7 +10,7 @@ const BotonesCertificados = () => {
       <div className="flex space-x-8">
         <div
           className="bg-gray-400 p-12 rounded-lg shadow-lg w-72 flex flex-col items-center cursor-pointer  hover:bg-gray-500"
-          onClick={() => navigate("/nomina-estudiantes")}
+          onClick={() => navigate("/nomina-estudiantes/nomina")}
         >
           <FaUsers size={70} className="mb-6" />
           <h2 className="text-lg font-bold">Nómina Estudiantes</h2>

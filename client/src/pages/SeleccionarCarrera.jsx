@@ -47,8 +47,8 @@ const SeleccionarCarrera = () => {
           <button
             key={index}
             className="bg-yellow-600 text-white px-6 py-4 rounded-lg shadow-md hover:bg-yellow-700"
-            onClick={() => navigate(`/certificado/${carrera.id}`)} // Navega con el ID de la carrera
-          >
+            onClick={() => navigate(`/pdf-viewer/${carrera.id}`)}
+            >
             {carrera.carrera}
           </button>
         ))}

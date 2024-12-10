@@ -57,7 +57,8 @@ export default function App() {
                     element={<EstudianteDetalle />}
                   />
                   <Route path="/certificado-detallado" element={<SeleccionarCarrera />} />
-                  <Route path="/nomina-estudiantes" element={<PdfViewer />} />
+                  <Route path="/nomina-estudiantes/:id" element={<PdfViewer />} />
+                  <Route path="/pdf-viewer/:id" element={<PdfViewer />} />
                 </Routes>
               </Suspense>
             </main>
