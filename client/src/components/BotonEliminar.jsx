@@ -11,7 +11,7 @@ const BotonEliminar = ({ rut }) => {
     try {
       // Eliminar historial académico
       const historialResponse = await fetch(
-        `http://localhost:3001/api/historialAcademico/eliminarHistorial/${rut}`,
+        `http://146.83.216.166:4006/api/historialAcademico/eliminarHistorial/${rut}`,
         {
           method: "DELETE",
           headers: {
@@ -26,7 +26,7 @@ const BotonEliminar = ({ rut }) => {
 
       // Eliminar carrera de destino
       const carreraResponse = await fetch(
-        `http://localhost:3001/api/estudiantes/eliminarCarreraDestino/${rut}`,
+        `http://146.83.216.166:4006/api/estudiantes/eliminarCarreraDestino/${rut}`,
         {
           method: "DELETE", // Usamos DELETE para eliminar el campo de carreraDestino
           headers: {

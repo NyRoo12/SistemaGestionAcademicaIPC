@@ -11,7 +11,7 @@ const Logs = () => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/logs");
+        const response = await fetch("http://146.83.216.166:4006/api/logs");
         if (!response.ok) {
           throw new Error("Error al obtener los logs");
         }
@@ -118,7 +118,7 @@ const Logs = () => {
 
   const clearLogs = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/logs/vaciar", {
+      const response = await fetch("http://146.83.216.166:4006/api/logs/vaciar", {
         method: "DELETE",
       });
       if (!response.ok) {
