@@ -34,39 +34,40 @@ const SeleccionarCarrera = () => {
       const estudiantes = await response.json();
 
       if (estudiantes.length === 0) {
-        setNoStudentsFound(true); // No hay estudiantes, se actualiza el estado
-        setShowTable(false); // Ocultar la tabla
-        return;
+          setNoStudentsFound(true); // No hay estudiantes, se actualiza el estado
+          setShowTable(false); // Ocultar la tabla
+          return;
       }
 
       const tablas = await Promise.all(estudiantes.map(async (estudiante) => {
-        const historialResponse = await fetch(`http://146.83.216.166:4006/api/historialAcademico/obtenerHistorial/${estudiante.rut}`);
-        const historial = await historialResponse.json();
+          const historialResponse = await fetch(`http://146.83.216.166:4006/api/historialAcademico/obtenerHistorial/${estudiante.rut}`);
+          const historial = await historialResponse.json();
 
-        const equivalenciasResponse = await fetch(`http://146.83.216.166:4006/api/asignaturasEquivalentes/obtenerEquivalencias?query=${estudiante.rut}`);
-        const equivalencias = await equivalenciasResponse.json();
+          const equivalenciasResponse = await fetch(`http://146.83.216.166:4006/api/asignaturasEquivalentes/obtenerEquivalencias?query=${estudiante.rut}`);
+          const equivalencias = await equivalenciasResponse.json();
 
-        const historialConEquivalencias = historial.map((item) => {
-          const equivalencia = equivalencias.find(eq => eq.codigo_IPC === item.codigo_IPC);
+          const historialConEquivalencias = historial.map((item) => {
+              const equivalencia = equivalencias.find(eq => eq.codigo_IPC === item.codigo_IPC);
+              const codigoDestino = equivalencia?.AsignaturasEquivalentes?.[0]?.codigo_destino || "N/A";
+              return {
+                  ...item,
+                  codigo_destino: codigoDestino === "N/A" ? item.codigo_IPC : codigoDestino,
+                  nombre: equivalencia?.AsignaturasEquivalentes?.[0]?.nombre || item.nombre_IPC,
+              };
+          });
+
           return {
-            ...item,
-            codigo_destino: equivalencia?.AsignaturasEquivalentes?.[0]?.codigo_destino || "N/A",
-            nombre: equivalencia?.AsignaturasEquivalentes?.[0]?.nombre || item.nombre_IPC,
+              estudiante,
+              historial: historialConEquivalencias,
+              equivalencias,
           };
-        });
-
-        return {
-          estudiante,
-          historial: historialConEquivalencias,
-          equivalencias,
-        };
       }));
 
       setStudents(tablas);
       setShowTable(true);
       setNoStudentsFound(false); // Restablecer si se encontraron estudiantes
     } catch (error) {
-      console.error("Error fetching students:", error);
+        console.error("Error fetching students:", error);
     }
   };
 
@@ -134,7 +135,6 @@ const SeleccionarCarrera = () => {
                       <th className="border border-gray-300 px-4 py-2">Código Destino</th>
                       <th className="border border-gray-300 px-4 py-2">Nombre</th>
                       <th className="border border-gray-300 px-4 py-2">Nota</th>
-                      <th className="border border-gray-300 px-4 py-2">Nivel</th>
                       <th className="border border-gray-300 px-4 py-2">Año</th>
                       <th className="border border-gray-300 px-4 py-2">Semestre</th>
                     </tr>
@@ -146,7 +146,6 @@ const SeleccionarCarrera = () => {
                         <td className="border border-gray-300 px-4 py-2">{item.codigo_destino}</td>
                         <td className="border border-gray-300 px-4 py-2">{item.nombre}</td>
                         <td className="border border-gray-300 px-4 py-2">{item.nota}</td>
-                        <td className="border border-gray-300 px-4 py-2">{item.nivel}</td>
                         <td className="border border-gray-300 px-4 py-2">{item.ano}</td>
                         <td className="border border-gray-300 px-4 py-2">{item.semestre}</td>
                       </tr>
