@@ -19,6 +19,7 @@ function IngresarAlumno() {
   const [step, setStep] = useState(1);
   const [careers, setCareers] = useState([]);
   const [studentsWithoutHistory, setStudentsWithoutHistory] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
@@ -134,6 +135,20 @@ function IngresarAlumno() {
     setStudent({ ...student, [field]: value });
   };
 
+  const handleRutChange = (event) => {
+    const query = event.target.value.toLowerCase();
+    setStudent({ ...student, rut: query });
+  
+    if (query.length > 0) {
+      const filtered = studentsWithoutHistory.filter((student) =>
+        student.rut.toLowerCase().startsWith(query)
+      );
+      setFilteredStudents(filtered);
+    } else {
+      setFilteredStudents([]);
+    }
+  };
+
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
     setFileName(file.name);
@@ -221,7 +236,10 @@ function IngresarAlumno() {
       setIsModalOpen(true);
     }
   };
-
+  const handleSelectRut = (selectedStudent) => {
+    setStudent({ ...selectedStudent, rut: selectedStudent.rut , año: selectedStudent.ano});
+    setFilteredStudents([]);
+  };
 
   return (
     <div className="p-8 bg-gray-100 h-screen flex justify-center">
@@ -233,13 +251,29 @@ function IngresarAlumno() {
                 <div className="col-span-2">
                   <label className="block font-semibold mb-2">Rut:</label>
                   <div className="flex items-center">
-                    <input
-                      type="text"
-                      value={student.rut}
-                      onChange={(e) => handleInputChange("rut", e.target.value)}
-                      className="w-full px-3 py-2 border rounded"
-                      placeholder="Ejemplo: 12365478-9"
-                    />
+                    <div className="relative w-full">
+                      <input
+                        type="text"
+                        value={student.rut}
+                        onChange={handleRutChange}
+                        placeholder="Ingresa el RUT del estudiante"
+                        className="border p-3 rounded w-full"
+                        style={{ width: '400px' }}
+                      />
+                      {filteredStudents.length > 0 && (
+                        <ul className="absolute z-10 border rounded mt-1 w-full bg-white max-h-40 overflow-y-auto">
+                          {filteredStudents.map((student) => (
+                            <li
+                              key={student.rut}
+                              onClick={() => handleSelectRut(student)}
+                              className="p-2 cursor-pointer hover:bg-gray-200"
+                            >
+                              {student.rut} - {student.nombre}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
                     <button
                       onClick={handleVerifyStudent}
                       className="ml-4 bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-700"
