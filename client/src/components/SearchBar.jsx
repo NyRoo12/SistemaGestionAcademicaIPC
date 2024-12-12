@@ -108,7 +108,7 @@ const SearchBar = () => {
           </button>
         </div>
         {studentsWithoutHistory.length >= 1 && (
-          <p style={{ color: 'grey' }} className="mt-2">
+          <p style={{ color: 'red' }} className="mt-2">
             Hay {studentsWithoutHistory.length} estudiantes cargados sin historial académico
           </p>
         )}
