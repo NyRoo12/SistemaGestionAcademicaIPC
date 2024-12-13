@@ -7,10 +7,10 @@ import { sequelize } from "./config/db.js";
 async function main() {
   await sequelize.sync({ force: false });
 
-  const ip = process.env.IP || 'localhost';
-  const port = process.env.PORT || 3001;
+  const ip = process.env.IP || '146.83.216.166';
+  const port = process.env.PORT || 4006;
 
-  app.listen(port, ip, () => {
+  app.listen(port, () => {
     console.log(`Server is running on http://${ip}:${port}`);
   });
 }

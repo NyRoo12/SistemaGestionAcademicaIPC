@@ -75,9 +75,12 @@ export const HistorialAcademico = sequelize.define(
 
 // Relación N:1 con estudiantes
 HistorialAcademico.belongsTo(Estudiante, {
-  foreignKey: "rut_estudiante", // Clave foránea en HistorialAcademico que apunta a Estudiante
-  targetKey: "rut", // Clave primaria en Estudiante
+  foreignKey: 'rut_estudiante',
+  targetKey: 'rut',
+  onDelete: 'NO ACTION',
+  onUpdate: 'CASCADE',
 });
+
 Estudiante.hasMany(HistorialAcademico, {
   foreignKey: "rut_estudiante", // Clave foránea en HistorialAcademico que apunta a Estudiante
   sourceKey: "rut", // Clave primaria en Estudiante
@@ -85,9 +88,12 @@ Estudiante.hasMany(HistorialAcademico, {
 
 // Relación N:1 con asignaturas_IPC
 HistorialAcademico.belongsTo(AsignaturasIPC, {
-  foreignKey: "codigo_IPC", // Clave foránea en HistorialAcademico que apunta a AsignaturaIPC
-  targetKey: "codigo_IPC", // Clave primaria en AsignaturaIPC
+  foreignKey: 'codigo_IPC',
+  targetKey: 'codigo_IPC',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
 });
+
 AsignaturasIPC.hasMany(HistorialAcademico, {
   foreignKey: "codigo_IPC", // Clave foránea en HistorialAcademico que apunta a AsignaturaIPC
   sourceKey: "codigo_IPC", // Clave primaria en AsignaturaIPC

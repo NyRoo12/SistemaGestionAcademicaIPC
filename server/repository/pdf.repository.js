@@ -652,4 +652,3 @@ async function procesarEstudiantes(estudiantes) {
   }
   return tablas;
 }
-

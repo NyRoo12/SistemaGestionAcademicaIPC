@@ -1,19 +1,19 @@
 import { Router } from "express";
 import {
-  obtenerHistorial,
-  obtenerHistorialPorRut,
-  agregar,
-  obtenerEstudiantesSinHistorial,
-  eliminarHistorial,
+  getTodoHistorial,
+  postHistorial,
+  getEstudiantesSinHistorial,
+  deleteHistorial,
+  getHistorialPorRut,
 } from "../controllers/historialAcademico.controller.js";
 
 const router = Router();
 
 // Rutas
-router.get("/", obtenerHistorial);
-router.get("/obtenerHistorial/:rut", obtenerHistorialPorRut); //ObtenerHistorialPorRut
-router.get("/estudiantesSinHistorial", obtenerEstudiantesSinHistorial);
-router.delete("/eliminarHistorial/:rut", eliminarHistorial);
-router.post("/agregarHistorial/:rut", agregar);
+router.get("/", getTodoHistorial);
+router.get("/obtenerHistorial/:rut", getHistorialPorRut); //ObtenerHistorialPorRut
+router.get("/estudiantesSinHistorial", getEstudiantesSinHistorial);
+router.delete("/eliminarHistorial/:rut", deleteHistorial);
+router.post("/agregarHistorial/:rut", postHistorial);
 
 export default router;
