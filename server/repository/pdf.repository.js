@@ -1,7 +1,12 @@
 import PDFDocument from 'pdfkit-table'
 import axios from 'axios'
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 export async function buildNomina(dataCallback, endCallback) {
+  // Uso de la función
+  const configData = await readConfig();
   const doc = new PDFDocument({
     size: [612.6675, 793.299096],
     bufferPages: true, // Para poder manipular todas las páginas después de generarlas
@@ -31,21 +36,28 @@ export async function buildNomina(dataCallback, endCallback) {
   doc.text(`VALDIVIA, ${formattedDate}`, { align: 'right' });
   doc.moveDown(4);
 
-  doc.font('Times-Bold').text('DE: ING. JORGE MORALES VILUGRON.', { align: 'left' });
-  doc.text('      DIRECTOR BACHILLERATO EN CIENCIAS DE LA INGENIERÍA PLAN COMÚN', { align: 'left' });
+  const [fromName, fromPosition] = configData.shipping.from.split(',').map(part => part.trim());
+  doc.font('Times-Bold').text(`DE: ${fromName}.`, { align: 'left' });
+  doc.text(`      ${fromPosition}`, { align: 'left' });
   doc.moveDown(); // Espaciado entre bloques
 
-  doc.text('A:   DR. MAURICIO RUIZ-TAGLE M.', { align: 'left' });
-  doc.text('       DIRECTOR DE ESTUDIOS DE PREGRADO', { align: 'left' });
+  const [toName, toPosition] = configData.shipping.to.split(',').map(part => part.trim());
+  doc.text(`A:   ${toName}.`, { align: 'left' });
+  doc.text(`       ${toPosition}`, { align: 'left' });
   doc.moveDown();
 
-  doc.text('C.C: SRTA. CRISTINA BARRIGA R.', { align: 'left' });
-  doc.text('         JEFA DEPARTAMENTO REGISTRO ACADÉMICO ESTUDIANTIL', { align: 'left' });
-  doc.moveDown();
+  const ccArray = configData.shipping.cc; // El array de C.C.
 
-  doc.text('        DRA. VIRGINIA VÁSQUEZ.', { align: 'left' });
-  doc.text('       DIRECTORA DE ASUNTOS ESTUDIANTILES', { align: 'left' });
-  doc.moveDown();
+  // Iterar sobre cada item en el array de C.C.
+  ccArray.forEach((cc, index) => {
+    // Separar el nombre y el cargo por la coma
+    const [name, role] = cc.split(','); // Suponiendo que cada string tiene formato "nombre, cargo"
+
+    // Escribir el nombre y el cargo en el documento
+    doc.text(`C.C: ${name}.`, { align: 'left' });  // Imprime el nombre
+    doc.text(`         ${role}`, { align: 'left' }); // Imprime el cargo
+    doc.moveDown();  // Mueve hacia abajo para el siguiente conjunto
+  });
 
   // Dibujar la línea negra separadora
   const pageWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right; // Ancho de página menos márgenes
@@ -268,20 +280,18 @@ export async function buildNomina(dataCallback, endCallback) {
 
     doc.opacity(1).lineWidth(1);
     doc.fontSize(9).text(
-        `Bachillerato en Ciencias de la Ingeniería Plan - Común - General Lagos Nº 2086 -  Campus Miraflores · Valdivia · Chile`,
-        40,
-        doc.page.height - 45,
-        { align: 'center' } // Centrado en la página
+      `${configData.address.name} - ${configData.address.address} -  Campus Miraflores · Valdivia · Chile`,
+      40,
+      doc.page.height - 45,
+      { align: 'center' } // Centrado en la página
     );
 
     doc.text(
-        `Fono: 56- 63-221859 -  email: bachilleratofci@uach.cl - · www.uach.cl`,
+        `Fono: ${configData.address.phone} -  email: ${configData.address.email} - · ${configData.address.website}`,
         40,
         doc.page.height - 30, // Posición debajo del texto existente
         { align: 'center' }
     );
-
-
 
     doc.page.margins.bottom = oldBottomMargin;
   }
@@ -382,20 +392,18 @@ export async function buildDetallado(carreraId, dataCallback, endCallback) {
     doc.fillColor('black');
     doc.opacity(1).lineWidth(1);
     doc.fontSize(9).text(
-        `Bachillerato en Ciencias de la Ingeniería Plan - Común - General Lagos Nº 2086 -  Campus Miraflores · Valdivia · Chile`,
-        40,
-        doc.page.height - 45,
-        { align: 'center' } // Centrado en la página
+      `${configData.address.name} - ${configData.address.address} -  Campus Miraflores · Valdivia · Chile`,
+      40,
+      doc.page.height - 45,
+      { align: 'center' } // Centrado en la página
     );
 
     doc.text(
-        `Fono: 56- 63-221859 -  email: bachilleratofci@uach.cl - · www.uach.cl`,
+        `Fono: ${configData.address.phone} -  email: ${configData.address.email} - · ${configData.address.website}`,
         40,
         doc.page.height - 30, // Posición debajo del texto existente
         { align: 'center' }
     );
-
-
 
     doc.page.margins.bottom = oldBottomMargin;
   }
@@ -490,4 +498,26 @@ async function procesarEstudiantes(estudiantes) {
     tablas.push(tabla);
   }
   return tablas;
+}
+
+// Ruta del archivo config.json
+const configPath = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../config.json'
+);
+
+// Función para leer el archivo JSON
+function readConfig() {
+  return new Promise((resolve, reject) => {
+    fs.readFile(configPath, 'utf8', (err, data) => {
+      if (err) {
+        console.error('Error al leer el archivo:', err);
+        reject(err); // Rechazamos la Promesa si hay un error
+        return;
+      }
+
+      const configData = JSON.parse(data); // Convertimos el contenido en un objeto
+      resolve(configData); // Resolvemos la Promesa con los datos leídos
+    });
+  });
 }

@@ -67,20 +67,29 @@ const ConfigModal = ({ isOpen, onClose }) => {
   
 
   const handleSave = async () => {
-    // Aquí se envían los datos al backend para guardarlos
-    const response = await fetch('/save-config', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (response.ok) {
-      console.log('Configuración guardada correctamente');
-    } else {
-      console.error('Error al guardar la configuración');
+    // Obtenemos los datos del formulario
+    const configData = {
+      shipping: formData.shipping,
+      address: formData.address,
+    };
+  
+    try {
+      // Enviar los datos al backend (POST a la API)
+      await fetch('http://localhost:3001/api/save-config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(configData),
+      });
+  
+      alert('La configuración se ha guardado correctamente');
+    } catch (error) {
+      console.error('Error al guardar la configuración:', error);
+      alert('Error al guardar la configuración');
     }
+
+    onClose();
   };
 
   return isOpen ? (
