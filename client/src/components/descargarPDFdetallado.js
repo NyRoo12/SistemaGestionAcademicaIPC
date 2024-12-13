@@ -2,8 +2,8 @@ export const fetchAndDownloadPdf = async (id) => {
   try {
     const url =
       id === "nomina"
-        ? "http://146.83.216.166:4006/api/pdf/nomina"
-        : `http://146.83.216.166:4006/api/pdf/detallado/${id}`;
+        ? "http://localhost:3001/api/pdf/nomina"
+        : `http://localhost:3001/api/pdf/detallado/${id}`;
     const response = await fetch(url, { method: "GET" });
 
     if (!response.ok) {

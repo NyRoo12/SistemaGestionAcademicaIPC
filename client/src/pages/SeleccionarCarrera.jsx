@@ -17,7 +17,7 @@ const SeleccionarCarrera = () => {
   // Llama al backend para obtener las carreras
   const fetchCareers = async () => {
     try {
-      const response = await fetch(`http://146.83.216.166:4006/api/asignaturasEquivalentes/carreras`);
+      const response = await fetch(`http://localhost:3001/api/asignaturasEquivalentes/carreras`);
       if (!response.ok) throw new Error("Error en la solicitud");
       const result = await response.json();
       setCareers(result);
@@ -29,7 +29,7 @@ const SeleccionarCarrera = () => {
   // Llama al backend para obtener los estudiantes y su historial académico
   const fetchStudents = async (carreraId) => {
     try {
-      const response = await fetch(`http://146.83.216.166:4006/api/estudiantes/porCarrera/${carreraId}`);
+      const response = await fetch(`http://localhost:3001/api/estudiantes/porCarrera/${carreraId}`);
       if (!response.ok) throw new Error("Error en la solicitud");
       const estudiantes = await response.json();
 
@@ -40,10 +40,10 @@ const SeleccionarCarrera = () => {
       }
 
       const tablas = await Promise.all(estudiantes.map(async (estudiante) => {
-          const historialResponse = await fetch(`http://146.83.216.166:4006/api/historialAcademico/obtenerHistorial/${estudiante.rut}`);
+          const historialResponse = await fetch(`http://localhost:3001/api/historialAcademico/obtenerHistorial/${estudiante.rut}`);
           const historial = await historialResponse.json();
 
-          const equivalenciasResponse = await fetch(`http://146.83.216.166:4006/api/asignaturasEquivalentes/obtenerEquivalencias?query=${estudiante.rut}`);
+          const equivalenciasResponse = await fetch(`http://localhost:3001/api/asignaturasEquivalentes/obtenerEquivalencias?query=${estudiante.rut}`);
           const equivalencias = await equivalenciasResponse.json();
 
           const historialConEquivalencias = historial.map((item) => {

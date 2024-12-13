@@ -98,7 +98,7 @@ const IngresarListado = () => {
   const confirmSubmission = async () => {
     try {
       const response = await fetch(
-        "http://146.83.216.166:4006/api/estudiantes/cargaMasiva",
+        "http://localhost:3001/api/estudiantes/cargaMasiva",
         {
           method: "POST",
           headers: {

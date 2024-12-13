@@ -27,7 +27,7 @@ function IngresarAlumno() {
 
   const fetchCareers = async () => {
     try {
-      const response = await fetch(`http://146.83.216.166:4006/api/asignaturasEquivalentes/carreras`);
+      const response = await fetch(`http://localhost:3001/api/asignaturasEquivalentes/carreras`);
       if (!response.ok) throw new Error("Error en la solicitud");
       const result = await response.json();
       console.log(result);
@@ -53,7 +53,7 @@ function IngresarAlumno() {
 
   const fetchStudentsWithoutHistory = async () => {
     try {
-      const response = await fetch("http://146.83.216.166:4006/api/historialAcademico/estudiantesSinHistorial");
+      const response = await fetch("http://localhost:3001/api/historialAcademico/estudiantesSinHistorial");
       if (!response.ok) throw new Error("Error al obtener alumnos sin historial");
       const result = await response.json();
       setStudentsWithoutHistory(result.data);
@@ -65,7 +65,7 @@ function IngresarAlumno() {
 
   const enviarHistorialAcademico = async (rut, historialAcademico) => {
     try {
-      const response = await fetch(`http://146.83.216.166:4006/api/historialAcademico/agregarHistorial/${rut}`, {
+      const response = await fetch(`http://localhost:3001/api/historialAcademico/agregarHistorial/${rut}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -95,7 +95,7 @@ function IngresarAlumno() {
       console.log(data);
 
       const response = await fetch(
-        `http://146.83.216.166:4006/api/estudiantes/cargarCarreraDestino/${rut}`,
+        `http://localhost:3001/api/estudiantes/cargarCarreraDestino/${rut}`,
         {
           method: "POST",
           headers: {

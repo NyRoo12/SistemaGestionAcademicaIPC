@@ -45,7 +45,6 @@ export default function App() {
                   <Route path="/estudiante/:rut" element={<HistorialAcademico />} />
                   <Route path="/logsAlumnos" element={<LogsAlumnos />} /> {/* Nueva ruta para Logs */}
                   <Route path="/certificado-detallado" element={<SeleccionarCarrera />} />
-                  <Route path="/nomina-estudiantes/:id" element={<PdfViewer />} />
                   <Route path="/pdf-viewer/:id" element={<PdfViewer />} />
                 </Routes>
               </Suspense>

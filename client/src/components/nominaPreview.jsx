@@ -8,7 +8,7 @@ const PdfViewer = () => {
         // Fetch the students' data
         const fetchStudents = async () => {
             try {
-                const response = await fetch('http://146.83.216.166:4006/api/estudiantes/');
+                const response = await fetch('http://localhost:3001/api/estudiantes/');
                 if (!response.ok) {
                     throw new Error('Error fetching students');
                 }
@@ -24,7 +24,7 @@ const PdfViewer = () => {
 
     const downloadPdf = async () => {
         try {
-            const url = "http://146.83.216.166:4006/api/pdf/nomina";
+            const url = "http://localhost:3001/api/pdf/nomina";
             const response = await fetch(url, { method: "GET" });
             if (!response.ok) {
                 throw new Error('Error fetching PDF');
