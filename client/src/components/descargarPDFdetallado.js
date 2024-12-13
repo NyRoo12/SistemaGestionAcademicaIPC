@@ -16,7 +16,7 @@ export const fetchAndDownloadPdf = async (id) => {
     // Crear el enlace para descargar
     const link = document.createElement("a");
     link.href = urlBlob;
-    link.download = "document.pdf"; // Nombre del archivo
+    link.download = "CertificadoDetallado.pdf"; // Nombre del archivo
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
