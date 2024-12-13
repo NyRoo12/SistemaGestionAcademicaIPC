@@ -1,28 +1,18 @@
-//estudiantes.repository.js
-import { HistorialAcademico } from "../models/HistorialAcademico.js";
 import { Estudiante } from "../models/Estudiantes.js";
 import { Op } from "sequelize";
 
-// Obtener solo los estudiantes que tienen historial académico
+// Obtener todos los estudiantes
 export async function getEstudiantes_() {
   try {
     const estudiantes = await Estudiante.findAll({
-      attributes: ["nombre", "rut", "carreraDestino", "ano"], // Selecciona las columnas necesarias
-      include: [
-        {
-          model: HistorialAcademico, // Relación con la tabla HistorialAcademico
-          attributes: [], // No necesitas las columnas de HistorialAcademico en el resultado
-          required: true, // Esto asegura que solo se incluyan estudiantes con historial académico
-        },
-      ],
-      order: [["nombre", "DESC"]], // Ordena los resultados por nombre de forma descendente
+      attributes: ["nombre", "rut", "carreraDestino", "ano"],
+      order: [["nombre", "DESC"]],
     });
     return estudiantes;
   } catch (error) {
-    throw new Error("Error al obtener estudiantes con historial académico");
+    throw new Error("Error al obtener todos los estudiantes");
   }
 }
-
 
 // Eliminar estudiante por RUT
 export async function eliminarEstudiante_(rut) {
@@ -49,23 +39,16 @@ export async function eliminarEstudiante_(rut) {
 export async function createEstudiante_(estudiante) {
   const { rut, nombre, ano, carreraDestino } = estudiante;
   try {
-    const [nuevoEstudiante, creado] = await Estudiante.upsert({
-      rut, // Clave primaria
+    const nuevoEstudiante = await Estudiante.create({
       nombre,
-      ano,
+      rut,
       carreraDestino,
+      ano,
     });
-
-    if (creado) {
-      console.log("Estudiante creado:", nuevoEstudiante);
-    } else {
-      console.log("Estudiante actualizado:", nuevoEstudiante);
-    }
-
     return nuevoEstudiante;
   } catch (error) {
-    console.error("Error al crear o actualizar el estudiante:", error);
-    throw new Error("Error al crear o actualizar el estudiante");
+    console.error("Error al crear el estudiante:", error);
+    throw new Error("Error al crear el estudiante");
   }
 }
 
@@ -124,6 +107,7 @@ export async function getDetalle_(rut) {
   }
 }
 
+
 export async function cargaCarreraDestino_(rut) {
   try {
     const estudiante = await Estudiante.findOne({
@@ -142,29 +126,14 @@ export async function cargaCarreraDestino_(rut) {
   }
 }
 
-export async function eliminarCarreraDestino_(rut) {
+export async function getPorCarrera_(carrera) {
   try {
-    // Buscar al estudiante por su RUT
-    const estudiante = await Estudiante.findOne({
-      where: { rut: rut },
+    const estudiantes = await Estudiante.findAll({
+      where: { carreraDestino: carrera },
     });
 
-    if (!estudiante) {
-      throw new Error("Estudiante no encontrado");
-    }
-
-    // Actualizar el campo 'carreraDestino' del estudiante a null
-    const result = await Estudiante.update(
-      { carreraDestino: null }, // Establecer 'carreraDestino' como null
-      { where: { rut } }
-    );
-
-    if (result[0] > 0) {
-      return { message: "Carrera destino eliminada exitosamente" };
-    } else {
-      throw new Error("No se encontró la carrera destino para el estudiante con el RUT proporcionado");
-    }
+    return estudiantes;
   } catch (error) {
-    throw new Error("Error al eliminar la carrera destino: " + error.message);
+    throw new Error(`Error al obtener estudiantes por carrera: ${error.message}`);
   }
 }

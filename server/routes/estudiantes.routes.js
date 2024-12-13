@@ -1,5 +1,3 @@
-//estudiantes.routes.js
-
 import { Router } from "express";
 import {
   getEstudiantes,
@@ -9,13 +7,15 @@ import {
   cargaMasiva,
   eliminarEstudiante,
   cargarCarreraDestino,
-  eliminarCarreraDestino,
+  getPorCarrera,
 } from "../controllers/estudiantes.controller.js";
 
 const router = Router();
 
 // Ruta para obtener todos los estudiantes
 router.get("/", getEstudiantes);
+
+router.get("/porCarrera/:id", getPorCarrera)
 
 // Ruta para crear un nuevo estudiante
 router.post("/crear", createEstudiante);
@@ -32,8 +32,6 @@ router.post("/cargaMasiva", cargaMasiva);
 // Ruta para cargar estudiantes de manera masiva
 router.delete("/eliminarEstudiante", eliminarEstudiante);
 
-// Ruta para eliminar la carrera destino de un estudiante
-router.delete("/eliminarCarreraDestino/:rut", eliminarCarreraDestino);
 
 router.post("/cargarCarreraDestino/:rut", cargarCarreraDestino);
 
