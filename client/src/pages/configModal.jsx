@@ -6,8 +6,7 @@ const ConfigModal = ({ isOpen, onClose }) => {
     shipping: {
       from: "Ing. Jorge Morales Vilugrón, Director Bachillerato en Ciencias de la Ingeniería Plan Común",
       to: "",
-      cc: [
-      ],
+      cc: [],
     },
     address: {
       name: "",
@@ -47,14 +46,14 @@ const ConfigModal = ({ isOpen, onClose }) => {
       ...prev,
       shipping: {
         ...prev.shipping,
-        cc: [...prev.shipping.cc, ""], // Añade una entrada vacía
+        cc: [...prev.shipping.cc, ""],
       },
     }));
   };
 
   const handleRemoveCC = (index) => {
     setFormData((prev) => {
-      const updatedCC = prev.shipping.cc.filter((_, i) => i !== index); // Elimina la entrada seleccionada
+      const updatedCC = prev.shipping.cc.filter((_, i) => i !== index);
       return {
         ...prev,
         shipping: {
@@ -64,17 +63,14 @@ const ConfigModal = ({ isOpen, onClose }) => {
       };
     });
   };
-  
 
   const handleSave = async () => {
-    // Obtenemos los datos del formulario
     const configData = {
       shipping: formData.shipping,
       address: formData.address,
     };
-  
+
     try {
-      // Enviar los datos al backend (POST a la API)
       await fetch('http://localhost:3001/api/save-config', {
         method: 'POST',
         headers: {
@@ -82,7 +78,7 @@ const ConfigModal = ({ isOpen, onClose }) => {
         },
         body: JSON.stringify(configData),
       });
-  
+
       alert('La configuración se ha guardado correctamente');
     } catch (error) {
       console.error('Error al guardar la configuración:', error);
@@ -95,12 +91,16 @@ const ConfigModal = ({ isOpen, onClose }) => {
   return isOpen ? (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-2xl">
-        <button
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-          onClick={onClose}
-        >
-          ✕
-        </button>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Configuración</h2>
+          <button
+            className="text-gray-500 hover:text-gray-700"
+            onClick={onClose}
+          >
+            ✕
+          </button>
+        </div>
+
         <div className="flex border-b mb-4">
           <button
             onClick={() => setActiveTab("shipping")}
@@ -127,7 +127,6 @@ const ConfigModal = ({ isOpen, onClose }) => {
         {activeTab === "shipping" && (
           <div>
             <h3 className="text-lg font-semibold mb-4">Información de Envío</h3>
-            <h4 className="font-medium mb-2">De:</h4>
             <textarea
               value={formData.shipping.from}
               onChange={(e) =>
@@ -136,7 +135,6 @@ const ConfigModal = ({ isOpen, onClose }) => {
               placeholder="De"
               className="w-full border p-2 mb-2 rounded"
             />
-            <h4 className="font-medium mb-2">A:</h4>
             <textarea
               value={formData.shipping.to}
               onChange={(e) =>
@@ -145,39 +143,34 @@ const ConfigModal = ({ isOpen, onClose }) => {
               placeholder="A"
               className="w-full border p-2 mb-2 rounded"
             />
-            <h4 className="font-medium mb-2">C.C:</h4>
             {formData.shipping.cc.map((cc, index) => (
-                <div key={index} className="flex items-center gap-2 mb-2">
+              <div key={index} className="flex items-center gap-2 mb-2">
                 <textarea
-                    value={cc}
-                    onChange={(e) => handleCCChange(index, e.target.value)}
-                    placeholder={`C.C ${index + 1}`}
-                    className="flex-1 border p-2 rounded"
+                  value={cc}
+                  onChange={(e) => handleCCChange(index, e.target.value)}
+                  placeholder={`C.C ${index + 1}`}
+                  className="flex-1 border p-2 rounded"
                 />
                 <button
-                    onClick={() => handleRemoveCC(index)}
-                    className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600"
+                  onClick={() => handleRemoveCC(index)}
+                  className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600"
                 >
-                    Eliminar
+                  Eliminar
                 </button>
-                </div>
+              </div>
             ))}
-            <div className="flex justify-end mt-2">
-                <button
-                    onClick={handleAddCC}
-                    className="bg-green-700 text-white py-1 px-4 rounded hover:bg-green-800"
-                >
-                    Agregar C.C
-                </button>
-                </div>
+            <button
+              onClick={handleAddCC}
+              className="bg-green-700 text-white py-1 px-4 rounded hover:bg-green-800"
+            >
+              Agregar C.C
+            </button>
           </div>
         )}
 
         {activeTab === "address" && (
           <div>
-            <h3 className="text-lg font-semibold mb-4">
-              Información de Dirección
-            </h3>
+            <h3 className="text-lg font-semibold mb-4">Información de Dirección</h3>
             <input
               type="text"
               value={formData.address.name}
@@ -196,41 +189,18 @@ const ConfigModal = ({ isOpen, onClose }) => {
               placeholder="Dirección"
               className="w-full border p-2 mb-2 rounded"
             />
-            <input
-              type="text"
-              value={formData.address.phone}
-              onChange={(e) =>
-                handleInputChange("address", "phone", e.target.value)
-              }
-              placeholder="Teléfono"
-              className="w-full border p-2 mb-2 rounded"
-            />
-            <input
-              type="email"
-              value={formData.address.email}
-              onChange={(e) =>
-                handleInputChange("address", "email", e.target.value)
-              }
-              placeholder="Email"
-              className="w-full border p-2 mb-2 rounded"
-            />
-            <input
-              type="text"
-              value={formData.address.website}
-              onChange={(e) =>
-                handleInputChange("address", "website", e.target.value)
-              }
-              placeholder="Página Web"
-              className="w-full border p-2 mb-2 rounded"
-            />
           </div>
         )}
-        <button
-          onClick={handleSave}
-          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 "
-        >
-          Guardar
-        </button>
+
+        <div className="flex justify-end gap-4 mt-4">
+        
+          <button
+            onClick={handleSave}
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+          >
+            Guardar
+          </button>
+        </div>
       </div>
     </div>
   ) : null;
