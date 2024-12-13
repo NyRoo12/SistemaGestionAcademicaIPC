@@ -83,7 +83,6 @@ const ConfigModal = ({ isOpen, onClose }) => {
     }
   };
 
-
   return isOpen ? (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-2xl">
