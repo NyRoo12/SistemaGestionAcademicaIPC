@@ -98,7 +98,7 @@ const IngresarListado = () => {
   const confirmSubmission = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3001/api/estudiantes/cargaMasiva",
+        "http://146.83.216.166:4006/api/estudiantes/cargaMasiva",
         {
           method: "POST",
           headers: {
@@ -240,7 +240,7 @@ const IngresarListado = () => {
                   className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                   onClick={() => {
                     setNotificationModal({ open: false, message: "" });
-                    navigate("/botones-a"); // Navegar tras cerrar
+                    navigate("/botones-a");
                   }}
                 >
                   Aceptar

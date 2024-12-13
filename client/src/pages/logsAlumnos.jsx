@@ -11,7 +11,7 @@ const Logs = () => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/logs");
+        const response = await fetch("http://146.83.216.166:4006/api/logs");
         if (!response.ok) {
           throw new Error("Error al obtener los logs");
         }
@@ -32,6 +32,7 @@ const Logs = () => {
     const grouped = {
       agregarHistorial: {},
       eliminarHistorial: {},
+      agregarEstudiante: {},
       otros: [],
     };
     const timeThreshold = 60000; // Intervalo máximo para agrupar (1 minuto)
@@ -59,6 +60,16 @@ const Logs = () => {
           };
         }
         grouped.eliminarHistorial[Rut].logs.push({ descripcion, fecha });
+      } else if (accion === "AGREGAR_ESTUDIANTE") {
+        // Nuevo caso para AGREGAR_ESTUDIANTE
+        if (!grouped.agregarEstudiante[Rut]) {
+          grouped.agregarEstudiante[Rut] = {
+            Rut,
+            logs: [],
+          };
+        }
+        grouped.agregarEstudiante[Rut].logs.push({ descripcion, fecha });
+
       } else {
         key = "otros";
         if (!grouped.otros[key]) {
@@ -91,6 +102,11 @@ const Logs = () => {
         id: index,
         log,
       })),
+      ...Object.values(grouped.agregarEstudiante).map((log, index) => ({
+        type: "agregarEstudiante",
+        id: index,
+        log,
+      })),
       ...Object.values(grouped.otros).flat(),
     ];
     return formattedLogs;
@@ -102,7 +118,7 @@ const Logs = () => {
 
   const clearLogs = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/logs/vaciar", {
+      const response = await fetch("http://146.83.216.166:4006/api/logs/vaciar", {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -147,6 +163,15 @@ const Logs = () => {
                         {`ELIMINAR_HISTORIAL - RUT: ${group.log.Rut}`}
                       </span>
                     </div>
+                  ) : group.type === "agregarEstudiante" ? ( // Nuevo caso para AGREGAR_ESTUDIANTE
+                    <div
+                      className="flex justify-between items-center cursor-pointer"
+                      onClick={() => toggleDescription(index)}
+                    >
+                      <span className="font-bold text-gray-800">
+                        {`AGREGAR_ESTUDIANTE - RUT: ${group.log.Rut}`}
+                      </span>
+                    </div>
                   ) : (
                     <div
                       className="flex justify-between items-center cursor-pointer"
@@ -160,7 +185,7 @@ const Logs = () => {
                       </span>
                     </div>
                   )}
-                  {expandedLog === index && (group.type === "agregarHistorial" || group.type === "eliminarHistorial") && (
+                  {expandedLog === index && (group.type === "agregarHistorial" || group.type === "eliminarHistorial" || group.type === "agregarEstudiante") && (
                     <div className="mt-2 text-sm text-gray-700">
                       <ul className="space-y-2">
                         {group.log.logs.map((logEntry, logIndex) => (

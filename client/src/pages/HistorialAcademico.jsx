@@ -16,7 +16,7 @@ const HistorialAcademico = () => {
     const fetchEstudiante = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/estudiantes/obtenerDetalle?query=${encodeURIComponent(rut)}`
+          `http://146.83.216.166:4006/api/estudiantes/obtenerDetalle?query=${encodeURIComponent(rut)}`
         );
         if (!response.ok) {
           throw new Error("Error al obtener el estudiante");
@@ -35,7 +35,7 @@ const HistorialAcademico = () => {
     const fetchHistorial = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/historialAcademico/obtenerHistorial/${encodeURIComponent(rut)}`
+          `http://146.83.216.166:4006/api/historialAcademico/obtenerHistorial/${encodeURIComponent(rut)}`
         );
         if (!response.ok) {
           throw new Error("Error al obtener el historial");
@@ -56,7 +56,7 @@ const HistorialAcademico = () => {
       const fetchEquivalencias = async () => {
         try {
           const response = await fetch(
-            `http://localhost:3001/api/asignaturasEquivalentes/obtenerEquivalencias?query=${encodeURIComponent(rut)}`
+            `http://146.83.216.166:4006/api/asignaturasEquivalentes/obtenerEquivalencias?query=${encodeURIComponent(rut)}`
           );
           if (!response.ok) {
             throw new Error("Error al obtener las equivalencias");
