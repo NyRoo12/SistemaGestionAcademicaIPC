@@ -17,5 +17,5 @@ COPY . .
 EXPOSE 4006
 
 # Comando por defecto para iniciar el servidor
-CMD ["node", "app.js"]
+CMD ["node", "index.js"]
 

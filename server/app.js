@@ -1,35 +1,47 @@
-require("dotenv").config(); // <-- Carga las variables de entorno
-const express = require("express");
-const connection = require("./config/db");
+import express from "express";
+import cors from "cors";
+import dotenv from 'dotenv';
+
+//init
+dotenv.config();
 const app = express();
-const cors = require("cors"); // Importa el paquete cors
-
-app.use(express.json()); // Permite manejar JSON
-
-app.use(cors()); // Usa cors en toda la aplicación
-
-app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "connect-src 'self' http://localhost:3001 http://localhost:4006");
-  next();
-});
 
 // Importar rutas
-const estudiantesRoutes = require("./routes/estudiantes");
-const asignaturasIPCRoutes = require("./routes/asignaturasIPC");
-const historialAcademicoRoutes = require("./routes/historialAcademico");
-const equivalenciasRoutes = require("./routes/equivalencias");
-const loginRoutes = require("./routes/login"); // Corregir el nombre para que coincida
+import estudiantesRoutes from './routes/estudiantes.routes.js';
+import asignaturasIPCRoutes from './routes/asignaturasIpc.routes.js';
+import historialAcademicoRoutes from './routes/historialAcademico.routes.js';
+import asignaturasEquivalentesRoutes from './routes/asignaturasEquivalentes.routes.js';
+import userRoutes from './routes/user.routes.js'; 
+import logsRoutes from './routes/logs.routes.js';
+import pdfRoutes from './routes/pdf.routes.js'
+
+
+app.use(express.json());
+
+// Configura CORS
+app.use(cors({
+  origin: (origin, callback) => {
+    const allowedOrigins = ['http://localhost:3000', 'http://146.83.216.166:3006'];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+}));
+
 
 // Usar las rutas
 app.use("/api/estudiantes", estudiantesRoutes);
 app.use("/api/asignaturasIPC", asignaturasIPCRoutes);
 app.use("/api/historialAcademico", historialAcademicoRoutes);
-app.use("/api/equivalencias", equivalenciasRoutes);
-app.use("/api/login", loginRoutes); // Usa loginRoutes en lugar de login
+app.use("/api/asignaturasEquivalentes", asignaturasEquivalentesRoutes);
+app.use('/api/logs', logsRoutes);
+app.use('/api/login', userRoutes);
+app.use("/api/pdf", pdfRoutes);
 
-const PORT = process.env.PORT || 3001;
 
-// Escuchar en el puerto definido
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
+
+export default app;

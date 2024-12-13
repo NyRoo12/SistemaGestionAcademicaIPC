@@ -2,6 +2,7 @@ import React from "react";
 
 const TarjetaHistorial = ({
   codigoIPC,
+  codigoIPCBRUTO,
   codigoDestino = null,
   nombre,
   nota,
@@ -26,12 +27,12 @@ const TarjetaHistorial = ({
 
   return (
     <div
-      className={`p-4 m-2 rounded-lg text-white ${tarjetaClase} shadow-lg transition-transform transform hover:scale-105`}
-      style={{ width: "1000px" }}
+      className={`p-2 m-2 rounded-lg text-white ${tarjetaClase} shadow-lg `} 
+      style={{ width: "3000px" }}
     >
-      <div className="flex justify-between text-lg">
+      <div className="flex justify-between text-sm">
         <div className="w-1/5 p-1">
-          <p>{codigoIPC}</p>
+          <p>{codigoIPCBRUTO}</p>
         </div>
         {codigoDestino && (
           <div className="w-1/5 p-1">

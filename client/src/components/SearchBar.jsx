@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ipc from "./images/ipc.png";
-const apiUrl = process.env.REACT_APP_API_URL;
 
 const SearchBar = () => {
   const [query, setQuery] = useState("");
@@ -9,10 +8,11 @@ const SearchBar = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false); // Nueva bandera
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${apiUrl}/estudiantes`);
+        const response = await fetch(`http://146.83.216.166:4006/api/estudiantes`);
         if (!response.ok) {
           throw new Error("Error en la solicitud");
         }
@@ -30,12 +30,9 @@ const SearchBar = () => {
     e.preventDefault();
     setSearchPerformed(true); // Marca que se realizó una búsqueda
     try {
-
       const response = await fetch(
-        `${apiUrl}/estudiantes/buscar?query=${encodeURIComponent(query)}`
+        `http://146.83.216.166:4006/api/estudiantes/buscar?query=${encodeURIComponent(query)}`
       );
-      console.log("apiUrl:", apiUrl); // Verifica el valor de apiUrl
-      console.log("query:", query);
       if (!response.ok) {
         throw new Error("Error en la solicitud");
       }
@@ -59,11 +56,11 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 py-8">
-      <h1 className="text-3xl font-bold mb-4">
+    <div className="flex flex-col items-center justify-start h-screen bg-gray-100 py-8 overflow-hidden">
+      <h1 className="text-3xl font-bold mb-4 mt-16">
         <img src={ipc} className="w-40 h-auto" alt="Logo IPC" />
       </h1>
-      <form onSubmit={handleSearch} className="w-full max-w-md mb-4">
+      <form onSubmit={handleSearch} className="w-full max-w-md mb-4 mt-4">
         <div className="relative flex items-center w-full">
           <input
             type="text"
@@ -94,7 +91,7 @@ const SearchBar = () => {
         </div>
       </form>
 
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md flex-grow overflow-y-auto min-h-auto max-h-[70vh] "> {/* Ajuste aquí */}
         {searchPerformed && filteredData.length === 0 ? (
           <div className="text-center my-4">
             <span className="text-lg text-gray-600">Sin Resultados</span>
