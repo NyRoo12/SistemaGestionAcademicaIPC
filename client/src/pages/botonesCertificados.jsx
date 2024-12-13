@@ -9,18 +9,18 @@ const BotonesCertificados = () => {
     <div className="flex justify-center items-center h-screen bg-gray-200">
       <div className="flex space-x-8">
         <div
-          className="bg-gray-400 p-8 rounded-lg shadow-lg w-64 flex flex-col items-center cursor-pointer"
-          onClick={() => navigate("")}
+          className="bg-gray-400 p-12 rounded-lg shadow-lg w-72 flex flex-col items-center cursor-pointer  hover:bg-gray-500"
+          onClick={() => navigate("/nomina-estudiantes/nomina")}
         >
-          <FaUsers size={50} className="mb-4" />
+          <FaUsers size={70} className="mb-6" />
           <h2 className="text-lg font-bold">Nómina Estudiantes</h2>
         </div>
         <div
-          className="bg-gray-400 p-8 rounded-lg shadow-lg w-64 flex flex-col items-center cursor-pointer"
-          onClick={() => navigate("")}
+          className="bg-gray-400 p-12 rounded-lg shadow-lg w-72 flex flex-col items-center cursor-pointer  hover:bg-gray-500"
+          onClick={() => navigate("/certificado-detallado")}
         >
-          <FaFileAlt size={50} className="mb-4" />
-          <h2 className="text-lg font-bold">Certificados</h2>
+          <FaFileAlt size={70} className="mb-6" />
+          <h2 className="text-lg font-bold">Certificado Detallado</h2>
         </div>
       </div>
     </div>

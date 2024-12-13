@@ -7,11 +7,13 @@ const SearchBar = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false); // Nueva bandera
+  const [studentsWithoutHistory, setStudentsWithoutHistory] = useState([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/estudiantes`);
+        const response = await fetch(`http://146.83.216.166:4006/api/estudiantes`);
         if (!response.ok) {
           throw new Error("Error en la solicitud");
         }
@@ -25,12 +27,16 @@ const SearchBar = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    fetchStudentsWithoutHistory();
+  }, []);
+
   const handleSearch = async (e) => {
     e.preventDefault();
     setSearchPerformed(true); // Marca que se realizó una búsqueda
     try {
       const response = await fetch(
-        `http://localhost:3001/api/estudiantes/buscar?query=${encodeURIComponent(query)}`
+        `http://146.83.216.166:4006/api/estudiantes/buscar?query=${encodeURIComponent(query)}`
       );
       if (!response.ok) {
         throw new Error("Error en la solicitud");
@@ -41,6 +47,19 @@ const SearchBar = () => {
       console.error("Error fetching data:", error);
     }
   };
+
+  const fetchStudentsWithoutHistory = async () => {
+    try {
+      const response = await fetch("http://146.83.216.166:4006/api/historialAcademico/estudiantesSinHistorial");
+      if (!response.ok) throw new Error("Error al obtener alumnos sin historial");
+      const result = await response.json();
+      setStudentsWithoutHistory(result.data);
+      console.log(result.data);
+    } catch (error) {
+      console.error("Error fetching students without history:", error);
+    }
+  };
+
 
   const filterData = (fetchedData) => {
     const isNumber = !isNaN(query.charAt(0));
@@ -55,11 +74,11 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 py-8">
-      <h1 className="text-3xl font-bold mb-4">
+    <div className="flex flex-col items-center justify-start h-screen bg-gray-100 py-8 overflow-hidden">
+      <h1 className="text-3xl font-bold mb-4 mt-16">
         <img src={ipc} className="w-40 h-auto" alt="Logo IPC" />
       </h1>
-      <form onSubmit={handleSearch} className="w-full max-w-md mb-4">
+      <form onSubmit={handleSearch} className="w-full max-w-md mb-4 mt-4">
         <div className="relative flex items-center w-full">
           <input
             type="text"
@@ -88,9 +107,14 @@ const SearchBar = () => {
             </svg>
           </button>
         </div>
+        {studentsWithoutHistory.length >= 1 && (
+          <p style={{ color: 'red' }} className="mt-2">
+            Hay {studentsWithoutHistory.length} estudiantes cargados sin historial académico
+          </p>
+        )}
       </form>
 
-      <div className="w-full max-w-md overflow-y-auto max-h-60"> {/* Ajuste aquí */}
+      <div className="w-full max-w-md flex-grow overflow-y-auto min-h-auto max-h-[70vh] "> {/* Ajuste aquí */}
         {searchPerformed && filteredData.length === 0 ? (
           <div className="text-center my-4">
             <span className="text-lg text-gray-600">Sin Resultados</span>
