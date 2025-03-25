@@ -1,0 +1,17 @@
+{
+    "shipping": {
+        "from": "Ing. Jorge Morales Vilugrón, Director Bachillerato en Ciencias de la Ingeniería Plan Común",
+        "to": "DR. MAURICIO RUIZ-TAGLE M, DIRECTOR DE ESTUDIOS DE PREGRADO",
+        "cc": [
+        "SRTA. CRISTINA BARRIGA R, JEFA DEPARTAMENTO REGISTRO ACADÉMICO ESTUDIANTIL",
+        "DRA. VIRGINIA VÁSQUEZ, DIRECTORA DE ASUNTOS ESTUDIANTILES"
+        ]
+    },
+    "address": {
+        "name": "Ingeniería Plan Común",
+        "address": "General Lagos Nº 2086",
+        "phone": "6- 63-221859",
+        "email": "bachilleratofci@uach.cl",
+        "website": "www.uach.cl"
+    }
+}

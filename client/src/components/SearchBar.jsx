@@ -7,6 +7,7 @@ const SearchBar = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false); // Nueva bandera
+  const [studentsWithoutHistory, setStudentsWithoutHistory] = useState([]);
 
 
   useEffect(() => {
@@ -26,6 +27,10 @@ const SearchBar = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    fetchStudentsWithoutHistory();
+  }, []);
+
   const handleSearch = async (e) => {
     e.preventDefault();
     setSearchPerformed(true); // Marca que se realizó una búsqueda
@@ -42,6 +47,19 @@ const SearchBar = () => {
       console.error("Error fetching data:", error);
     }
   };
+
+  const fetchStudentsWithoutHistory = async () => {
+    try {
+      const response = await fetch("http://146.83.216.166:4006/api/historialAcademico/estudiantesSinHistorial");
+      if (!response.ok) throw new Error("Error al obtener alumnos sin historial");
+      const result = await response.json();
+      setStudentsWithoutHistory(result.data);
+      console.log(result.data);
+    } catch (error) {
+      console.error("Error fetching students without history:", error);
+    }
+  };
+
 
   const filterData = (fetchedData) => {
     const isNumber = !isNaN(query.charAt(0));
@@ -89,6 +107,11 @@ const SearchBar = () => {
             </svg>
           </button>
         </div>
+        {studentsWithoutHistory.length >= 1 && (
+          <p style={{ color: 'red' }} className="mt-2">
+            Hay {studentsWithoutHistory.length} estudiantes cargados sin historial académico
+          </p>
+        )}
       </form>
 
       <div className="w-full max-w-md flex-grow overflow-y-auto min-h-auto max-h-[70vh] "> {/* Ajuste aquí */}

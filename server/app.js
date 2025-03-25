@@ -13,7 +13,8 @@ import historialAcademicoRoutes from './routes/historialAcademico.routes.js';
 import asignaturasEquivalentesRoutes from './routes/asignaturasEquivalentes.routes.js';
 import userRoutes from './routes/user.routes.js'; 
 import logsRoutes from './routes/logs.routes.js';
-import pdfRoutes from './routes/pdf.routes.js'
+import pdfRoutes from './routes/pdf.routes.js';
+import configRoutes from './routes/config.routes.js';
 
 
 app.use(express.json());
@@ -41,7 +42,7 @@ app.use("/api/asignaturasEquivalentes", asignaturasEquivalentesRoutes);
 app.use('/api/logs', logsRoutes);
 app.use('/api/login', userRoutes);
 app.use("/api/pdf", pdfRoutes);
-
+app.use("/api/save-config", configRoutes);
 
 
 export default app;

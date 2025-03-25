@@ -10,6 +10,8 @@ import BotonesAlumnos from "./pages/botonesAlumnos.jsx";
 import IngresarListado from "./pages/IngresarListado.jsx";
 import BotonesCertificados from "./pages/botonesCertificados.jsx";
 import LogsAlumnos from "./pages/logsAlumnos.jsx"; // Importa la nueva página de logs
+import SeleccionarCarrera from "./pages/SeleccionarCarrera.jsx";
+import PdfViewer from "./components/nominaPreview.jsx"
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para controlar si el usuario está logueado
@@ -42,6 +44,9 @@ export default function App() {
                   <Route path="/ingresar-listado" element={<IngresarListado />} />
                   <Route path="/estudiante/:rut" element={<HistorialAcademico />} />
                   <Route path="/logsAlumnos" element={<LogsAlumnos />} /> {/* Nueva ruta para Logs */}
+                  <Route path="/certificado-detallado" element={<SeleccionarCarrera />} />
+                  <Route path="/nomina-estudiantes/:id" element={<PdfViewer />} />
+                  <Route path="/pdf-viewer/:id" element={<PdfViewer />} />
                 </Routes>
               </Suspense>
             </main>
